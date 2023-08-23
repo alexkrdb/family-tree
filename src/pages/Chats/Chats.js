@@ -29,16 +29,19 @@ function Chats() {
 
   useEffect(() => {
     const getChats = () => {
+      
       //get user from db by uid
       const unsub = onSnapshot(
         doc(db, "users", currentUser.uid),
         async (user) => {
+          
           //get user chats from db from user.chats
           const q = query(
             collection(db, "chats"),
             where("__name__", "in", user.data().chats)
           );
           const querrySnap = await getDocs(q);
+          
           //update chatList
           setChats([]);
           querrySnap.forEach((doc) => {

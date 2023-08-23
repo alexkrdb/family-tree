@@ -201,5 +201,17 @@ body {
       gap: 2rem;
     }
   }
+
+  .treePage{
+
+    .pageContent{
+
+      .treeNode{
+      
+        border: 1px solid #999;
+        position: absolute;
+      }  
+    }
+  }
 }
 
