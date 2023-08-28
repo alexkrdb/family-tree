@@ -17,6 +17,12 @@ function Tree() {
       firstName: "John",
       lastName: "Black"
   }];
+  
+  const childParentRel = {
+    children: ["root"],
+    parents: ["parent_1", "parent_2"]
+  };
+
   let x = 0;
   const getX = () => {
     x += 100;
