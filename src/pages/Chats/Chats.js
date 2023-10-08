@@ -16,10 +16,10 @@ import { Input } from "../../components/chats/Input";
 
 function Chats() {
   const { currentUser } = useContext(AuthContext);
-  const [ chats, setChats] = useState([]);
+  const [chats, setChats] = useState([]);
   const { data, dispatch } = useContext(ChatContext);
 
-  const handleSelect = ({chat}) => {
+  const handleSelect = ({ chat }) => {
     dispatch({
       type: "CHANGE_CHAT",
       payload: chat.users,
@@ -29,19 +29,17 @@ function Chats() {
 
   useEffect(() => {
     const getChats = () => {
-      
       //get user from db by uid
       const unsub = onSnapshot(
         doc(db, "users", currentUser.uid),
         async (user) => {
-          
           //get user chats from db from user.chats
           const q = query(
             collection(db, "chats"),
             where("__name__", "in", user.data().chats)
           );
           const querrySnap = await getDocs(q);
-          
+
           //update chatList
           setChats([]);
           querrySnap.forEach((doc) => {
@@ -64,15 +62,15 @@ function Chats() {
             <div
               className="chatItem"
               key={chat.name}
-              onClick={() => handleSelect({chat})}
+              onClick={() => handleSelect({ chat })}
             >
               {chat.name}
             </div>
           ))}
         </div>
         <div className="chatContent">
-        <Chat />
-        {(data.chatId != "null") &&<Input />}
+          <Chat />
+          {data.chatId !== "null" && <Input />}
         </div>
       </div>
     </div>

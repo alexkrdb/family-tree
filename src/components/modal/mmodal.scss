@@ -1,0 +1,10 @@
+.mmodal{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    width: 66%;
+    padding: 2rem;
+    border-radius: 15px;
+}

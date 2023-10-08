@@ -1,3 +1,4 @@
+
 import "./index.scss";
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -10,7 +11,7 @@ root.render(
   <AuthContextProvider>
     <ChatContextProvider>
       <React.StrictMode>
-        <App />
+        <App/>
       </React.StrictMode>
     </ChatContextProvider>
   </AuthContextProvider>

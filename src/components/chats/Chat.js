@@ -9,7 +9,7 @@ export const Chat = () => {
   const {currentUser} = useContext(AuthContext);
   const { data } = useContext(ChatContext);
   const [chat, setChat] = useState([]);
-  const messages = []
+  
   useEffect(()=>{
     const unsub = onSnapshot(doc(db, "chats", data.chatId), (doc)=>{
       doc.exists() && setChat(doc.data());

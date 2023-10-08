@@ -1,7 +1,7 @@
-import { useContext, Suspense, lazy } from "react";
+import { Suspense, lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Navbar } from "../../components/Navbar/Navbar";
-import { AuthContext } from "../../context/AuthContex";
+
 
 const Home = lazy(() => import("../Home/Home"));
 const Login = lazy(() => import("../Login/Login"));

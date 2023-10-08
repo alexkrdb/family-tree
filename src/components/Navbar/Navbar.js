@@ -1,33 +1,28 @@
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useState } from "react";
+import {  useState } from "react";
 
 
 export const Navbar = () => {
   const [user] = useAuthState(auth);
-  const [dropDown, setDropdown] = useState(true);
+  // const [dropDown, setDropdown] = useState(true);
   const navigate = useNavigate();
 
   function signOut() {
     return (
       auth.currentUser && (
-        <button
+        <a
           onClick={() => {
             navigate("/");
             auth.signOut();
           }}
         >
           Sign out
-        </button>
+        </a>
       )
     );
   }
-  
-
-
-
-
 
   return (
     <nav>
@@ -48,15 +43,10 @@ export const Navbar = () => {
           <Link to="/events">Wspomnienia</Link>
         </li>
       </ul>
-      {user != null ? (
-        <div>
-          {/* <button onClick={setDropdown((prev)=> !prev)}>{user.email}</button> */}
-          <ul className="dropdown">
-            <li>
-              <Link to="/profil">Profil</Link>
-            </li>
-            <li>{signOut()}</li>
-          </ul>
+      {user ? (
+        <div className="buttonGroup">
+          <Link to="/profil">Profil</Link>
+          {signOut()}
         </div>
       ) : (
         <Link to="/login">Zaloguj sie</Link>

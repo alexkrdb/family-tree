@@ -1,5 +1,6 @@
 import { Handle, Position } from "reactflow";
-// import { Fragment } from "react";
+import MModal from "../modal/MModal";
+
 
 function Node({ data }) {
   return (
@@ -9,20 +10,28 @@ function Node({ data }) {
         <p>{data.firstName + " " + data.lastName}</p>
         <hr />
         <p>
-          01.01.1912
+          {data.birthDate?.toDate().toLocaleDateString()||"?"}
           <br />
-          02.10.2000
+          {data.deathDate?.toDate().toLocaleDateString()}
         </p>
       </div>
-      <div>
-        <button className="addParent">+</button>
-        <button className="addPartner">+</button>
-        <button className="addChild">+</button>
+      <div className="btnGroup">
+        <MModal buttonText="Add parent">
+          <p>Add parent</p>
+        </MModal>
+        <MModal buttonText="Add partner">
+          <p>Add partner</p>
+        </MModal>
+        <MModal buttonText="Add child">
+          <p>Add child</p>
+        </MModal>
       </div>
       <Handle id="parents" type="source" position={Position.Top} />
       <Handle id="children" type="target" position={Position.Bottom} />
     </div>
   );
 }
+
+
 
 export default Node;

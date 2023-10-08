@@ -1,0 +1,19 @@
+.comment{
+    display: flex;
+    padding-bottom: 1rem;
+    gap: 10px;
+
+    .commentBox{
+      background-color: #eee;
+      border-radius: 10px;
+      width: 100%;
+      padding: 10px;
+      p, h6{
+        display: flex;
+      }
+    }
+    .likes{
+        display: flex;
+        flex-direction: column;
+    }
+  }
