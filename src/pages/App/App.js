@@ -9,7 +9,7 @@ const Register = lazy(() => import("../Register/Register"));
 const Tree = lazy(() => import("../Tree/Tree"));
 const Events = lazy(() => import("../Events/Events"));
 const Chats = lazy(() => import("../Chats/Chats"));
-
+const Profile = lazy(() => import("../Profile/Profile"));
 function App() {
   return (
     <BrowserRouter>
@@ -23,6 +23,7 @@ function App() {
             <Route path="tree" element={<Tree />} />
             <Route path="events" element={<Events />} />
             <Route path="chats" element={<Chats />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
         </Routes>
       </Suspense>
