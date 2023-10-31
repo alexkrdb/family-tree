@@ -5,48 +5,31 @@ import {
   Paper,
   Typography,
   Avatar,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CommentIcon from "@mui/icons-material/Comment";
 import MModal from "../modal/MModal";
 import Comment from "./Comment";
+import { Favorite, FavoriteBorder } from "@mui/icons-material";
+import { grey } from "@mui/material/colors";
 
 const Event = ({ data }) => {
-  console.log(data);
-
-  const comments = [
-    {
-      author: {
-        id: "a",
-        fullName: "Gregor O'Neil",
-        photoUrl:
-          "https://media.gettyimages.com/id/1358205700/photo/shot-of-a-young-man-using-his-smartphone-to-send-text-messages.jpg?s=612x612&w=0&k=20&c=TV26GSLYVo3p2QyjKRCe6KdfQbIlZs638IGrViakNbk=",
-      },
-      text: "Hahahahhahahahha",
-      likes: 12,
-      timestamp: Date("1995-12-17T03:24:00"),
-    },
-    {
-      author: {
-        id: "b",
-        fullName: "Gregorius O'Nilo",
-        photoUrl:
-          "https://media.gettyimages.com/id/1284284200/photo/hes-on-a-mission.jpg?s=612x612&w=0&k=20&c=Zs8e1adNt025RcBNZ7pg1vjdgO4SHetBwQJCnJDZR0U=",
-      },
-      text: "Sexy",
-      likes: 1,
-      timestamp: Date("2000-12-17T03:24:00"),
-    },
-  ];
   return (
     <Paper elevation={6} className="event">
       <div className="header">
         <Avatar
           sx={{ height: 50, width: 50 }}
-          src="https://media.gettyimages.com/id/1310533180/photo/cheerful-fashionable-adult-man-in-city-setting.jpg?s=612x612&w=0&k=20&c=hfy_5L8llmz_sUp1_n1NbM5Gsyk0kUbJRmR3TXAaoMM="
-          alt="Adam"
-        />
-        <Typography> Adam O'Neil</Typography>
+          src={data.author?.photoUrl}>
+            {data.author?.name[0]}
+          </Avatar>
+        <div style={{ display: "flex", flexDirection:"column" }}>
+          <Typography variant="h6">{data.author?.name}</Typography>
+          <Typography color={grey[500]} variant="body2">
+            {data.insertedAt.toDate().toLocaleDateString('en-GB', { month: "short", day: "numeric", hour: "numeric", minute: "numeric"})}
+          </Typography>
+        </div>
       </div>
       <hr />
 
@@ -63,12 +46,25 @@ const Event = ({ data }) => {
       <hr />
 
       <div className="footer">
-        <Button startIcon={<FavoriteBorderIcon />} color="error">
-          Like
-        </Button>
+        <FormControlLabel
+          value="like"
+          control={
+            <Checkbox
+              icon={<FavoriteBorder />}
+              color="error"
+              checkedIcon={<Favorite />}
+            />
+          }
+          label={
+            <Typography color="error" variant="button">
+              Like
+            </Typography>
+          }
+          labelPlacement="right"
+        />
         <MModal buttonText="Comments" startIcon={<CommentIcon />}>
           <Typography variant="h3">Comments</Typography>
-          {comments.map((comment) => {
+          {data?.comments?.map((comment) => {
             // console.log(comment);
             return <Comment comment={comment} />;
           })}

@@ -1,5 +1,6 @@
 import { Handle, Position } from "reactflow";
 import MModal from "../modal/MModal";
+import PersonFormDialog from "./PersonFormDialog";
 
 
 function Node({ data }) {
@@ -16,9 +17,7 @@ function Node({ data }) {
         </p>
       </div>
       <div className="btnGroup">
-        <MModal buttonText="Add parent">
-          <p>Add parent</p>
-        </MModal>
+        <PersonFormDialog/>
         <MModal buttonText="Add partner">
           <p>Add partner</p>
         </MModal>
