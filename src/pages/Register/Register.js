@@ -11,7 +11,7 @@ export default function Register() {
     password: "",
     fName: "",
     lName: "",
-    dBirth: null, // Inicjalizujemy jako null
+    dBirth: null, 
     country: "",
     location: "",
     bio: ""

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Typography,
   Button,
@@ -9,26 +9,42 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
+import ProfileEditLogin from "../../components/profile/profileEditLogin";
 
-const tableCellStyle = {
-  fontWeight: "bold",
-  minWidth: "60px",
+const hidden = (bool) => {
+  if (bool) return { display: "none" };
 };
 
-const dataCellStyle = {
-  textAlign: "left",
-};
+const ProfileTabLogin = (props) => {
+  console.log(props);
+  const user = props.user;
+  const [isEdit, setIsEdit] = useState(false);
+  const tableCellStyle = {
+    fontWeight: "bold",
+    minWidth: "60px",
+  };
 
-const ProfileTabLogin= ({ user, toggleEdit }) => {
+  const dataCellStyle = {
+    textAlign: "left",
+  };
+  const updateData = () => {
+    setIsEdit(true);
+  };
+
   return (
     <div>
-      <Typography variant="h6">My login data</Typography>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 250 }} aria-label="simple table">
+      <ProfileEditLogin
+        user={user}
+        setIsEdit={setIsEdit}
+        style={hidden(!isEdit)}
+      />
+      <TableContainer component={Paper} style={hidden(isEdit)}>
+        <Typography variant="h6">My login data</Typography>
+        <Table sx={{ minWidth: 250, maxWidth: 900 }} aria-label="simple table">
           <TableBody>
             <TableRow>
               <TableCell component="th" scope="row" sx={tableCellStyle}>
-                Email
+                Email:
               </TableCell>
               <TableCell align="left" sx={dataCellStyle}>
                 {user?.email}
@@ -36,16 +52,16 @@ const ProfileTabLogin= ({ user, toggleEdit }) => {
             </TableRow>
             <TableRow>
               <TableCell component="th" scope="row" sx={tableCellStyle}>
-                Hasło
+                Hasło:
               </TableCell>
               <TableCell align="left" sx={dataCellStyle}>
-                *************
+                ***********
               </TableCell>
             </TableRow>
           </TableBody>
         </Table>
+        <Button onClick={updateData}>Edytuj</Button>
       </TableContainer>
-      <Button onClick={toggleEdit}>Edytuj</Button>
     </div>
   );
 };

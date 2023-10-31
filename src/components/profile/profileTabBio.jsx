@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Typography,
   Button,
@@ -9,22 +9,38 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
+import ProfileEditBio from "../../components/profile/profileEditBio";
 
-const tableCellStyle = {
-  fontWeight: "bold",
-  minWidth: "60px",
+const hidden = (bool) => {
+  if (bool) return { display: "none" };
 };
 
-const dataCellStyle = {
-  textAlign: "left",
-};
+const ProfileTabBio = (props) => {
+  console.log(props);
+  const user = props.user;
+  const [isEdit, setIsEdit] = useState(false);
+  const tableCellStyle = {
+    fontWeight: "bold",
+    minWidth: "60px",
+  };
 
-const ProfileTabBio = ({ user, toggleEdit }) => {
+  const dataCellStyle = {
+    textAlign: "left",
+  };
+  const updateData = () => {
+    setIsEdit(true);
+  };
+
   return (
     <div>
-      <Typography variant="h6">My bio</Typography>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 250, maxWidth: 900, }} aria-label="simple table">
+      <ProfileEditBio
+        bio={user.bio}
+        setIsEdit={setIsEdit}
+        style={hidden(!isEdit)}
+      />
+      <TableContainer component={Paper} style={hidden(isEdit)}>
+        <Typography variant="h6">My bio</Typography>
+        <Table sx={{ minWidth: 250, maxWidth: 900 }} aria-label="simple table">
           <TableBody>
             <TableRow>
               <TableCell component="th" scope="row" sx={tableCellStyle}>
@@ -39,7 +55,7 @@ const ProfileTabBio = ({ user, toggleEdit }) => {
                 Data urodzenia
               </TableCell>
               <TableCell align="left" sx={dataCellStyle}>
-                {user?.bio?.dBirth.toDate().toLocaleDateString()}
+                {user && user.bio?.dBirth.toDate().toLocaleDateString()}
               </TableCell>
             </TableRow>
             <TableRow>
@@ -68,8 +84,8 @@ const ProfileTabBio = ({ user, toggleEdit }) => {
             </TableRow>
           </TableBody>
         </Table>
+        <Button onClick={updateData}>Edytuj</Button>
       </TableContainer>
-      <Button onClick={toggleEdit}>Edytuj</Button>
     </div>
   );
 };

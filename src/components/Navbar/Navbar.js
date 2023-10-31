@@ -45,7 +45,7 @@ export const Navbar = () => {
       </ul>
       {user ? (
         <div className="buttonGroup">
-          <Link to="/profile">Profil</Link>
+          <Link to={`/profile/${auth.currentUser.uid}`}>Profil</Link>
           {signOut()}
         </div>
       ) : (
