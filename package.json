@@ -19,6 +19,7 @@
     "react-scripts": "5.0.1",
     "reactflow": "^11.8.3",
     "sass": "^1.64.1",
+    "uuid": "^9.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

@@ -11,7 +11,6 @@ export const Input = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (message) {
-      console.log(message);
       await updateDoc(doc(db, "chats", data.chatId), {
         messages: arrayUnion({
             message: message,
