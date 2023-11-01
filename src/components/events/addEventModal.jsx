@@ -49,8 +49,9 @@ const AddEventModal = (props) => {
           comments: [],
           insertedAt: Timestamp.now(),
         };
-        // saveOne(post, "posts", post.id);
+        saveOne(post, "posts", post.id);
         console.log("Post saved", post);
+        props.setEvents(x => [post, ...x])
         setPostText(null);
         setFiles([])
       }
@@ -73,7 +74,7 @@ const AddEventModal = (props) => {
       <Dialog
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
-        fullWidth="lg"
+        fullWidth
         maxWidth="lg"
         open={open}
       >
