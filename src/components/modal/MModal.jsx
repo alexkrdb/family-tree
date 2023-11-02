@@ -33,12 +33,13 @@ const MModal = (props) => {
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        sx={{overflowY: "hidden"}}
       >
-        <Box className="mmodal" sx={{ boxShadow: 24 }}>
+        <Box className="mmodal" sx={{ boxShadow: 24, height: "max-content" }}>
           <IconButton
             sx={{
               position: "absolute",
-              top: "10%",
+              top: "5%",
               right: "10%",
               fontSize: "large",
             }}
@@ -46,7 +47,8 @@ const MModal = (props) => {
           >
             <CloseRoundedIcon />
           </IconButton>
-          {props?.children}
+            {props?.children}
+          
         </Box>
       </Modal>
     </Fragment>

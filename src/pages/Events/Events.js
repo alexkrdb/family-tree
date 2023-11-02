@@ -8,15 +8,14 @@ import AddEventModal from "../../components/events/addEventModal";
 
 function Events() {
   const [events, setEvents] = useEvents();
-
   return (
     <div className="eventsPage">
       <div className="pageContent">
         <Typography variant="h1">Events</Typography>
         {events.map((item) => {
-          return <Event data={item} key={item.id}/>;
+          return <Event data={item} key={item.id} setEvents={setEvents}/>;
         })}
-        <AddEventModal/>
+        <AddEventModal setEvents={setEvents}/>
       </div>
     </div>  
   );

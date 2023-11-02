@@ -21,7 +21,8 @@
         padding: 18px 12px;
         .header{
           display: flex;
-          gap: 2rem;
+
+          justify-content: space-between;
           img{
             object-fit: cover;
             width: 50px;

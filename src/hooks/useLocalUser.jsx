@@ -14,6 +14,7 @@ const setLocalUser = async (currentUser) => {
       lname: userData?.bio.lName,
       email: userData?.email,
       photoUrl: userData?.photoUrl,
+      family: userData?.family,
     }
   }
     localStorage.setItem("user", JSON.stringify(user));
