@@ -9,17 +9,15 @@ import Header from "../../components/profile/header";
 import ProfileTab from "../../components/profile/profileTab";
 
 import { useParams } from "react-router-dom";
+import ProfileTabBio from "../../components/profile/profileTabBio";
+import { Button } from "@mui/material";
+import { updateOne } from "../../hooks/useDB";
 
 const Profile = () => {
   const { currentUser } = useContext(AuthContext);
   const [user, setUser] = useState({});
-  const [selectedTab, setSelectedTab] = useState(0);
   let { userId } = useParams();
   console.log(userId);
-
-  // if(userId==currentUser.uid){
-  //   //redirect to another user profile
-  // }
   useEffect(() => {
     const fetchData = async () => {
       console.log("Fetching data from the database");
@@ -29,11 +27,35 @@ const Profile = () => {
 
     currentUser && fetchData();
   }, [currentUser]);
-
+  const addFamilyMember = () => {
+    const updatedData = { family: [userId] };
+    updateOne(updatedData, "users", currentUser.uid);
+  };
+  console.log("user?.family:", user?.family);
+  console.log("userId:", userId);
   return (
     <div className="Profile">
-      <Header user={user} />
-      <ProfileTab user={user} currentUser={currentUser} />
+      {userId === currentUser?.uid ? (
+        <>
+          <Header user={user} />
+          <ProfileTab user={user} currentUser={currentUser} />
+        </>
+      ) : (
+        <>
+          <Header user={user} />
+          <ProfileTabBio
+            user={user}
+            logged={userId != currentUser?.uid}
+            key={currentUser?.uid}
+          />
+
+          {user?.family?.includes(userId) ? (
+            <Button>Usun</Button>
+          ) : (
+            <Button onClick={addFamilyMember}>Dodaj</Button>
+          )}
+        </>
+      )}
     </div>
   );
 };

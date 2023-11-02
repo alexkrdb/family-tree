@@ -13,6 +13,8 @@ import {
   TextField,
 } from "@mui/material";
 import { AuthContext } from "../../context/AuthContex";
+import { getLocalUser, setLocalUser } from "../../hooks/useLocalUser";
+import { updateOne } from "../../hooks/useDB";
 
 const tableCellStyle = {
   fontWeight: "bold",
@@ -33,8 +35,9 @@ const ProfileEditBio = ({ bio, setIsEdit, ...other }) => {
   };
 
   const handleSaveChanges = () => {
-    const userDocRef = doc(db, "users", currentUser.uid);
-    updateDoc(userDocRef, { bio: editedData });
+    updateOne({ bio: editedData }, "users", currentUser.uid);
+    const user = getLocalUser();
+    setLocalUser({ ...user, bio: editedData });
     setIsEdit(false);
   };
   return (
@@ -77,7 +80,9 @@ const ProfileEditBio = ({ bio, setIsEdit, ...other }) => {
                   id="outlined-basic"
                   label="dBirth"
                   variant="outlined"
-                  defaultValue={editedData?.dBirth?.toDate().toLocaleDateString()}
+                  defaultValue={editedData?.dBirth
+                    ?.toDate()
+                    .toLocaleDateString()}
                   onChange={(e) =>
                     setEditedData({ ...editedData, dBirth: e.target.value })
                   }

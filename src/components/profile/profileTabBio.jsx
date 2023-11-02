@@ -19,6 +19,7 @@ const ProfileTabBio = (props) => {
   console.log(props);
   const user = props.user;
   const [isEdit, setIsEdit] = useState(false);
+
   const tableCellStyle = {
     fontWeight: "bold",
     minWidth: "60px",
@@ -39,7 +40,7 @@ const ProfileTabBio = (props) => {
         style={hidden(!isEdit)}
       />
       <TableContainer component={Paper} style={hidden(isEdit)}>
-        <Typography variant="h6">My bio</Typography>
+        {props.logged && <Typography variant="h6">My bio</Typography>}
         <Table sx={{ minWidth: 250, maxWidth: 900 }} aria-label="simple table">
           <TableBody>
             <TableRow>
@@ -84,7 +85,7 @@ const ProfileTabBio = (props) => {
             </TableRow>
           </TableBody>
         </Table>
-        <Button onClick={updateData}>Edytuj</Button>
+        {props.logged && <Button onClick={updateData}> Edytuj </Button>}
       </TableContainer>
     </div>
   );
