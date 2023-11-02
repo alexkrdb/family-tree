@@ -23,7 +23,8 @@ function App() {
             <Route path="tree" element={<Tree />} />
             <Route path="events" element={<Events />} />
             <Route path="chats" element={<Chats />} />
-            <Route path="profile" element={<Profile />} />
+            <Route path="profile/:userId" element={<Profile />} />
+            <Route path="notfound" element={<Profile />} />
           </Route>
         </Routes>
       </Suspense>
