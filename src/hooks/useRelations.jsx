@@ -3,6 +3,7 @@ import { AuthContext } from "../context/AuthContex";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { useEdgesState } from "reactflow";
+import { readMany } from "./useDB";
 
 export const useRelations = () => {
     const [edges, setEdges, onEdgesChange]= useEdgesState([]);
@@ -10,7 +11,10 @@ export const useRelations = () => {
     
     const fetchRelations = async() => {
         console.log("Edges: fetching data from database");
-        const rawData = await getDocs(collection(db, "trees", currentUser.uid, "relations"));
+        const data= await readMany([],"trees", currentUser.uid, "relations")
+        data.map(el => ({...el, type: "step"}));
+        console.log(data);
+        const rawData = await getDocs(collection(db, "trees",  currentUser.uid, "relations" ));
         const processedRel = []
         rawData.forEach((relation)=>{
             const tempRel = relation.data();
@@ -18,6 +22,7 @@ export const useRelations = () => {
             processedRel.push(tempRel)
             // console.log(tempRel)
         })
+        console.log("procesed",processedRel );
         setEdges(processedRel);
     }
 

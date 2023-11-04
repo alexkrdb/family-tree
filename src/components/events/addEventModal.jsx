@@ -32,7 +32,7 @@ const AddEventModal = (props) => {
 
   const handleSave = async () => {
     try{
-      const urls = await uploadFiles();
+    const urls = await uploadFiles();
     console.log("urls", urls);
     const user = getLocalUser()
       if(user){
