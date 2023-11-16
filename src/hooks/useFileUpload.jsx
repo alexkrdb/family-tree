@@ -14,6 +14,7 @@ const UseFileUpload = (fileUrl = "images", typePrefix = "IMG_") => {
       const fileRef = ref(storage, `${fileUrl}/${typePrefix}${v1()}`);
       fileRefs.push(await uploadBytes(fileRef, file));
     };
+    fileRefs = await Promise.all(fileRefs)
     for(const fileRef of fileRefs){
       const url = getDownloadURL(fileRef.ref)
       promises.push(url)
