@@ -11,18 +11,20 @@ import ProfileTab from "../../components/profile/profileTab";
 import { useParams } from "react-router-dom";
 import ProfileTabBio from "../../components/profile/profileTabBio";
 import { Button } from "@mui/material";
-import { updateOne } from "../../hooks/useDB";
+import { readOne, updateOne } from "../../hooks/useDB";
+import ProfileTabPrivacy from "../../components/profile/profileTabPrivacy";
 
 const Profile = () => {
   const { currentUser } = useContext(AuthContext);
   const [user, setUser] = useState({});
   let { userId } = useParams();
+
   console.log(userId);
   useEffect(() => {
     const fetchData = async () => {
       console.log("Fetching data from the database");
-      const userData = await getDoc(doc(db, "users", userId));
-      setUser(userData.data());
+      const userDoc = await readOne("users", userId);
+      setUser(userDoc);
     };
 
     currentUser && fetchData();
@@ -37,15 +39,15 @@ const Profile = () => {
     <div className="Profile">
       {userId === currentUser?.uid ? (
         <>
-          <Header user={user} />
+          <Header user={user} currentUser={currentUser} />
           <ProfileTab user={user} currentUser={currentUser} />
         </>
       ) : (
         <>
-          <Header user={user} />
+          <Header user={user} currentUser={currentUser} />
           <ProfileTabBio
             user={user}
-            logged={userId != currentUser?.uid}
+            logged={userId !== currentUser?.uid}
             key={currentUser?.uid}
           />
 

@@ -1,12 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import {  useState } from "react";
-
+import { useState } from "react";
+import { IconButton, TextField, Typography } from "@mui/material";
+import SearchIcon from '@mui/icons-material/Search';
 
 export const Navbar = () => {
   const [user] = useAuthState(auth);
   // const [dropDown, setDropdown] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   function signOut() {
@@ -43,14 +45,31 @@ export const Navbar = () => {
           <Link to="/events">Wspomnienia</Link>
         </li>
       </ul>
-      {user ? (
-        <div className="buttonGroup">
-          <Link to={`/profile/${auth.currentUser.uid}`}>Profil</Link>
-          {signOut()}
+
+      <div className="buttonGroup">
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <TextField
+            id="search"
+            variant="standard"
+            size="small"
+            placeholder={"Wyszukaj członka rodziny..."}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <Link to={`/search?searchQuery=${encodeURIComponent(searchQuery)}`}>
+            <SearchIcon />
+          </Link>
         </div>
-      ) : (
-        <Link to="/login">Zaloguj sie</Link>
-      )}
+
+        {user ? (
+          <div className="buttonGroup">
+            <Link to={`/profile/${auth.currentUser.uid}`}>Profil</Link>
+            {signOut()}
+          </div>
+        ) : (
+          <Link to="/login">Zaloguj sie</Link>
+        )}
+      </div>
     </nav>
   );
 };

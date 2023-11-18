@@ -10,9 +10,9 @@ const UseFileUpload = (fileUrl = "images", typePrefix = "IMG_") => {
     const fileRefs = [];
     const promises = [];
     // files.forEach(async (file) => {
-    for await (const file of files){
+    for (const file of files){
       const fileRef = ref(storage, `${fileUrl}/${typePrefix}${v1()}`);
-      fileRefs.push(uploadBytes(fileRef, file));
+      fileRefs.push(await uploadBytes(fileRef, file));
     };
     for(const fileRef of fileRefs){
       const url = getDownloadURL(fileRef.ref)

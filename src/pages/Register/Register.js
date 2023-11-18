@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { auth } from '../../config/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { db } from '../../config/firebase';
 import { serverTimestamp, setDoc, doc } from 'firebase/firestore';
+import { Grid, IconButton, InputAdornment, Paper, Typography } from '@mui/material';
+import EmailIcon from '@mui/icons-material/Email';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -11,7 +13,7 @@ export default function Register() {
     password: "",
     fName: "",
     lName: "",
-    dBirth: null, 
+    dBirth: null,
     country: "",
     location: "",
     bio: ""
@@ -23,6 +25,7 @@ export default function Register() {
     const { email, password, fName, lName, dBirth, country, location, bio } = formData;
 
     const userDoc = {
+      id: user.uid,
       displayName: user.displayName,
       email: user.email,
       photoUrl: user.photoURL,
@@ -34,7 +37,7 @@ export default function Register() {
       userDoc.bio = {
         fName,
         lName,
-        dBirth: dBirth ? new Date(dBirth) : null, 
+        dBirth: dBirth ? new Date(dBirth) : null,
         country,
         location,
         bio
@@ -72,20 +75,27 @@ export default function Register() {
   };
 
   return (
-    <div className='register'>
-      <div className='content'>
+    <div className='form content'>
+
+      <Paper elevation="24" sx={{ padding: "3rem" }}>
+        <Typography variant="h4">Rejestracja</Typography>
         <form onSubmit={onSubmit}>
-          <input type='text' name="email" placeholder='Email' required onChange={handleInput} />
-          <input type='password' name="password" placeholder='Password' required onChange={handleInput} />
-          <input type='text' name="fName" placeholder='FName' onChange={handleInput} />
-          <input type='text' name="lName" placeholder='LName' onChange={handleInput} />
-          <input type='date' name="dBirth" placeholder='dBirth' onChange={handleInput} />
-          <input type='text' name="country" placeholder='Country' onChange={handleInput} />
-          <input type='text' name="location" placeholder='Location' onChange={handleInput} />
-          <input type='text' name="bio" placeholder='Bio' onChange={handleInput} />
-          <button type="submit">Submit</button>
+          <Grid container spacing={2}>
+            <Grid item xs={12}><input type='text' name="email" placeholder='Email' required onChange={handleInput} /></Grid>
+            <Grid item xs={12}><input type='password' name="password" placeholder='Password' required onChange={handleInput} /></Grid>
+            <Grid item xs={6}><input type='text' name="fName" placeholder='First Name' onChange={handleInput} /></Grid>
+            <Grid item xs={6}><input type='text' name="lName" placeholder='Surname' onChange={handleInput} /></Grid>
+            <Grid item xs={12}><input type='date' name="dBirth" placeholder='date of birth' onChange={handleInput} /></Grid>
+            <Grid item xs={6}> <input type='text' name="country" placeholder='Country' onChange={handleInput} /></Grid>
+            <Grid item xs={6}><input type='text' name="location" placeholder='Location' onChange={handleInput} /></Grid>
+            <Grid item xs={12}><input fullWidth multiline rows={4} type='text' name="bio" placeholder='Bio' onChange={handleInput} /></Grid>
+            <Grid item xs={12}><button type="submit">Submit</button></Grid>
+            <Grid item xs={12}><Link to="/login">Masz konto? Zarejestruj się</Link></Grid>
+          </Grid>
+          
+          
         </form>
-      </div>
+      </Paper>
     </div>
   );
 }
