@@ -1,24 +1,34 @@
-import { useContext, useState } from "react";
+import { memo, useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContex";
 import { ChatContext } from "../../context/ChatContext";
 import { Timestamp, arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { db } from "../../config/firebase";
+import { saveOne, updateOne } from "../../hooks/useDB";
+import { v1 } from "uuid";
 
-export const Input = () => {
+export const Input = memo(({setChatState}) => {
   const [message, setMessage] = useState("");
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (message) {
-      await updateDoc(doc(db, "chats", data.chatId), {
-        messages: arrayUnion({
-            message: message,
-            time: Timestamp.now(),
-            user: currentUser.uid
-        })
-      });
-      setMessage("")
+      const id = v1()
+      const obj = {
+        id: id,
+        message: message,
+        time: Timestamp.now(),
+        user: currentUser.uid,
+      }
+      await saveOne(
+        obj,
+        "chats",
+        data.chatId,
+        "messages",
+        id
+      );
+      setMessage(""); 
+      setChatState((oldState) => ({...oldState, messages: [...oldState.messages, obj]}))
     }
   };
 
@@ -39,4 +49,4 @@ export const Input = () => {
       </div>
     </form>
   );
-};
+});
