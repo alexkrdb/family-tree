@@ -4,15 +4,15 @@ export const ChatContext = createContext();
 
 export const ChatContextProvider = ({ children }) => {
   const INITIAL_STATE = {
-    chatId: "null",
-    users: []
+    chatId: null,
+    data: {}
   }
 
   const chatReducer = (state, action) =>{
     switch(action.type){
       case "CHANGE_CHAT":
         return {
-          users: action.payload, 
+          data: action.payload, 
           chatId: action.id
         } 
 

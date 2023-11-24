@@ -1,50 +1,50 @@
-import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContex";
-import { Chat } from "../../components/chats/Chat";
-import {
-  doc,
-  onSnapshot,
-  collection,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { db } from "../../config/firebase";
 import { ChatContext } from "../../context/ChatContext";
-import { Input } from "../../components/chats/Input";
+import { Form } from "../../context/FormContext";
+import { Chat } from "../../components/chats/Chat";
+import { doc, onSnapshot, where } from "firebase/firestore";
+import { useEffect, useState, useContext, memo } from "react";
+import { db } from "../../config/firebase";
+import { readMany } from "../../hooks/useDB";
+import {
+  Modal,
+  ModalContents,
+  ModalDismissButton,
+  ModalOpenButton,
+} from "../../components/modal/newModal";
+import { Button } from "@mui/material";
+import ChatCreator, {
+  SaveNewChatButton,
+} from "../../components/chats/ChatCreator";
 
 function Chats() {
+  console.count("refreshed");
   const { currentUser } = useContext(AuthContext);
+  const [user, setUser] = useState({});
   const [chats, setChats] = useState([]);
   const { data, dispatch } = useContext(ChatContext);
 
-  const handleSelect = ({ chat }) => {
+  const handleSelect = (   chat ) => {
     dispatch({
       type: "CHANGE_CHAT",
-      payload: chat.users,
+      payload: chat,
       id: chat.id,
     });
   };
 
   useEffect(() => {
     const getChats = () => {
-      //get user from db by uid
       const unsub = onSnapshot(
+        //get user from db by uid
         doc(db, "users", currentUser.uid),
-        async (user) => {
-          //get user chats from db from user.chats
-          const q = query(
-            collection(db, "chats"),
-            where("__name__", "in", user.data().chats)
+        async (userSnap) => {
+          const querrySnap = await readMany(
+            //get user chats from db from user.chats
+            [where("users", "array-contains", userSnap.id)],
+            "chats"
           );
-          const querrySnap = await getDocs(q);
-
-          //update chatList
-          setChats([]);
-          querrySnap.forEach((doc) => {
-            setChats((oldChats) => [...oldChats, doc.data()]);
-          });
+          setChats(querrySnap); //update chatList
+          setUser(userSnap.data());
         }
       );
       return () => {
@@ -54,6 +54,8 @@ function Chats() {
     currentUser && getChats();
   }, [currentUser]);
 
+
+  // console.log(data);
   return (
     <div className="chatPage">
       <div className="content">
@@ -61,20 +63,60 @@ function Chats() {
           {chats?.map((chat) => (
             <div
               className="chatItem"
-              key={chat.name}
-              onClick={() => handleSelect({ chat })}
+              key={chat.id}
+              onClick={() => handleSelect(chat)}
             >
               {chat.name}
             </div>
           ))}
+          <CreateChatModal
+            currentUser={currentUser}
+            chatsLength={chats.length}
+            userFamily={user.family}
+          />
         </div>
-        <div className="chatContent">
-          <Chat />
-          {data.chatId !== "null" && <Input />}
-        </div>
+        <div className="chatContent">{data.chatId && <Chat key={data.chatId}/>}</div>
       </div>
     </div>
   );
 }
 
-export default Chats;
+const CreateChatModal = ({ currentUser, chatsLength, userFamily }) => {
+  return (
+    <Modal>
+      <Form
+        initState={{
+          chatName: "",
+          selectedPeople: [currentUser?.uid],
+          photos: [],
+        }}
+        key={currentUser?.uid}
+      >
+        <ModalOpenButton>
+          <div className="chatItem" key="newChat">
+            {chatsLength == 0 && "Jeszcze nie masz czatów"}
+            <Button>Utworz nowy</Button>
+          </div>
+        </ModalOpenButton>
+
+        <ModalContents
+          title="Utworz nowy czat"
+          actions={
+            <div>
+              <ModalDismissButton>
+                <Button variant="text" color="error">
+                  Cancel
+                </Button>
+              </ModalDismissButton>
+              <SaveNewChatButton />
+            </div>
+          }
+        >
+          <ChatCreator people={userFamily || []} key={userFamily?.length} />
+        </ModalContents>
+      </Form>
+    </Modal>
+  );
+};
+
+export default memo(Chats);
