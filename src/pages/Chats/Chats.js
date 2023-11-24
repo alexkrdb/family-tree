@@ -12,7 +12,8 @@ import {
   ModalDismissButton,
   ModalOpenButton,
 } from "../../components/modal/newModal";
-import { Button } from "@mui/material";
+import GroupIcon from "@mui/icons-material/Group";
+import { Avatar, Button, List, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 import ChatCreator, {
   SaveNewChatButton,
 } from "../../components/chats/ChatCreator";
@@ -59,22 +60,28 @@ function Chats() {
   return (
     <div className="chatPage">
       <div className="content">
-        <div className="chatList">
+        <List className="chatList">
           {chats?.map((chat) => (
-            <div
+            <ListItem
               className="chatItem"
               key={chat.id}
               onClick={() => handleSelect(chat)}
             >
-              {chat.name}
-            </div>
+              <ListItemAvatar>
+                <Avatar src={chat.photoUrl}>
+                  <GroupIcon/>
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={chat.name}/>
+              
+            </ListItem>
           ))}
           <CreateChatModal
             currentUser={currentUser}
             chatsLength={chats.length}
             userFamily={user.family}
           />
-        </div>
+        </List>
         <div className="chatContent">{data.chatId && <Chat key={data.chatId}/>}</div>
       </div>
     </div>
@@ -93,10 +100,10 @@ const CreateChatModal = ({ currentUser, chatsLength, userFamily }) => {
         key={currentUser?.uid}
       >
         <ModalOpenButton>
-          <div className="chatItem" key="newChat">
-            {chatsLength == 0 && "Jeszcze nie masz czatów"}
+          <ListItem className="chatItem" key="newChat">
+            {chatsLength === 0 && "Jeszcze nie masz czatów"}
             <Button>Utworz nowy</Button>
-          </div>
+          </ListItem>
         </ModalOpenButton>
 
         <ModalContents
