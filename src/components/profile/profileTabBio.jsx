@@ -15,11 +15,25 @@ const hidden = (bool) => {
   if (bool) return { display: "none" };
 };
 
-const ProfileTabBio = (props) => {
-  console.log(props);
-  const user = props.user;
+const ProfileTabBio = ({user, logged}) => {
+
   const [isEdit, setIsEdit] = useState(false);
 
+  const renderBio = () => {
+    if (user.privacySettings?.includes("bio")) {
+      return (
+        <TableRow>
+          <TableCell component="th" scope="row" sx={{ fontWeight: "bold" }}>
+            Bio
+          </TableCell>
+          <TableCell align="left">
+            <Typography variant="body1">{user?.bio?.biography}</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+    return null;
+  };
   const tableCellStyle = {
     fontWeight: "bold",
     minWidth: "60px",
@@ -40,7 +54,7 @@ const ProfileTabBio = (props) => {
         style={hidden(!isEdit)}
       />
       <TableContainer component={Paper} style={hidden(isEdit)}>
-        {props.logged && <Typography variant="h6">My bio</Typography>}
+        <Typography variant="h6">My bio</Typography>
         <Table sx={{ minWidth: 250, maxWidth: 900 }} aria-label="simple table">
           <TableBody>
             <TableRow>
@@ -75,17 +89,10 @@ const ProfileTabBio = (props) => {
                 {user?.bio?.location}
               </TableCell>
             </TableRow>
-            <TableRow>
-              <TableCell component="th" scope="row" sx={tableCellStyle}>
-                Bio
-              </TableCell>
-              <TableCell align="left" sx={dataCellStyle}>
-                {user?.bio?.biography}
-              </TableCell>
-            </TableRow>
+            {renderBio()}
           </TableBody>
         </Table>
-        {props.logged && <Button onClick={updateData}> Edytuj </Button>}
+         <Button onClick={updateData}> Edytuj </Button>
       </TableContainer>
     </div>
   );

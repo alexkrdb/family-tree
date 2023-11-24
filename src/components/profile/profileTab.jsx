@@ -5,6 +5,7 @@ import ProfileTabBio from "./profileTabBio";
 import { deleteUser } from "firebase/auth";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
+import ProfileTabPrivacy from "./profileTabPrivacy";
 
 const ProfileTab = (props) => {
   const user = props.user;
@@ -67,6 +68,7 @@ const ProfileTab = (props) => {
 
         <div className="privacy" style={hidden(2)}>
           <Typography variant="h6">My privacy tab</Typography>
+          <ProfileTabPrivacy user={user}/>
         </div>
       </div>
     </div>

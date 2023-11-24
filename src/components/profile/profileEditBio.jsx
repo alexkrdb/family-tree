@@ -11,19 +11,11 @@ import {
   TableRow,
   Paper,
   TextField,
+  Grid,
 } from "@mui/material";
 import { AuthContext } from "../../context/AuthContex";
 import { getLocalUser, setLocalUser } from "../../hooks/useLocalUser";
 import { updateOne } from "../../hooks/useDB";
-
-const tableCellStyle = {
-  fontWeight: "bold",
-  minWidth: "60px",
-};
-
-const dataCellStyle = {
-  textAlign: "left",
-};
 
 const ProfileEditBio = ({ bio, setIsEdit, ...other }) => {
   const [editedData, setEditedData] = useState(bio);
@@ -41,16 +33,16 @@ const ProfileEditBio = ({ bio, setIsEdit, ...other }) => {
     setIsEdit(false);
   };
   return (
-    <div {...other}>
+    <div {...other} className="tab ">
       <Typography variant="h6">Edit bio</Typography>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 250, maxWidth: 900 }} aria-label="simple table">
           <TableBody>
             <TableRow>
-              <TableCell component="th" scope="row" sx={tableCellStyle}>
+              <TableCell component="th" scope="row">
                 Imie i Nazwisko
               </TableCell>
-              <TableCell align="left" sx={dataCellStyle}>
+              <TableCell align="left">
                 <TextField
                   id="outlined-basic"
                   label="fName"
@@ -72,10 +64,10 @@ const ProfileEditBio = ({ bio, setIsEdit, ...other }) => {
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell component="th" scope="row" sx={tableCellStyle}>
+              <TableCell component="th" scope="row">
                 Data urodzenia
               </TableCell>
-              <TableCell align="left" sx={dataCellStyle}>
+              <TableCell align="left">
                 <TextField
                   id="outlined-basic"
                   label="dBirth"
@@ -90,10 +82,10 @@ const ProfileEditBio = ({ bio, setIsEdit, ...other }) => {
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell component="th" scope="row" sx={tableCellStyle}>
+              <TableCell component="th" scope="row">
                 Państwo
               </TableCell>
-              <TableCell align="left" sx={dataCellStyle}>
+              <TableCell align="left">
                 <TextField
                   id="outlined-basic"
                   label="country"
@@ -106,10 +98,10 @@ const ProfileEditBio = ({ bio, setIsEdit, ...other }) => {
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell component="th" scope="row" sx={tableCellStyle}>
+              <TableCell component="th" scope="row">
                 Miejscowość
               </TableCell>
-              <TableCell align="left" sx={dataCellStyle}>
+              <TableCell align="left">
                 <TextField
                   id="outlined-basic"
                   label="location"
@@ -122,10 +114,10 @@ const ProfileEditBio = ({ bio, setIsEdit, ...other }) => {
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell component="th" scope="row" sx={tableCellStyle}>
+              <TableCell component="th" scope="row">
                 Bio
               </TableCell>
-              <TableCell align="left" sx={dataCellStyle}>
+              <TableCell align="left">
                 <TextField
                   id="outlined-basic"
                   label="biography"

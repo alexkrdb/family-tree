@@ -1,0 +1,33 @@
+// SearchFamily.scss
+.container {
+  padding: 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  background: #eaf3fa;
+  min-height: 600px;
+
+  .searchContainer {
+    display: flex;
+    gap: 1rem;
+    width: 75%;
+    background: white;
+  }
+
+  .tableContainer {
+    margin-top: 2rem;
+
+    width: 600px;
+  }
+
+  .resultItem {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+
+    .avatar {
+      margin-right: 1rem;
+    }
+  }
+}

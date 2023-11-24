@@ -1,6 +1,7 @@
 import { Suspense, lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Navbar } from "../../components/Navbar/Navbar";
+import SearchFamily from "../SearchFamily/SearchFamily";
 
 
 const Home = lazy(() => import("../Home/Home"));
@@ -24,6 +25,7 @@ function App() {
             <Route path="events" element={<Events />} />
             <Route path="chats" element={<Chats />} />
             <Route path="profile/:userId" element={<Profile />} />
+            <Route path="search" element={<SearchFamily/>} />
             <Route path="notfound" element={<Profile />} />
           </Route>
         </Routes>
