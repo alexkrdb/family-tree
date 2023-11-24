@@ -9,7 +9,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
 
-  nav {
+  nav  {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -48,13 +48,13 @@ body {
     /* height:100%; */
 
     .content {
-      padding-top: 1rem;
+      padding: 0.5rem 0;
       display: flex;
       flex-direction: row;
       align-items: flex-start;
       text-align: center;
       justify-content: flex-start;
-      height: calc(100% - 54.4px - 1rem);
+      height: calc(100vh - 54.4px - 1rem);
 
       .chatList {
         display: flex;
@@ -79,16 +79,16 @@ body {
         }
       }
 
-      .chatContent{
+      .chatContent {
         display: flex;
         flex-direction: column;
-        flex:3;
+        flex: 3;
         justify-content: space-between;
         width: 100%;
         margin: 0 1rem 0 1rem;
-        height: 100% ;
-        
-        .messages{
+        height: 100%;
+
+        .messages {
           display: flex;
           flex-direction: column;
           height: 100%;
@@ -97,8 +97,7 @@ body {
           scrollbar-color: #fff #fff;
           scrollbar-3dlight-color: #fff;
           scrollbar-arrow-color: #aaa;
-        }
-
+          list-style-type: none;
           li.message {
             display: flex;
             flex-direction: row;
@@ -114,50 +113,51 @@ body {
               margin: 5px 0;
             }
 
-          &.self {
-            text-align: right;
-            justify-content: right;
-
-            .messageBody {
+            &.self {
               text-align: right;
-              background-color: #666;
-              border-radius: 20px 0 20px 20px;
+              justify-content: right;
+
+              .messageBody {
+                text-align: right;
+                background-color: #666;
+                border-radius: 20px 0 20px 20px;
+              }
             }
           }
         }
 
-        .input{
+        .input {
           display: flex;
           flex-direction: row;
-          gap:1rem;
+          gap: 1rem;
           height: 2.1rem;
           padding: 5px;
-          border-top:1px solid #aaa;
+          border-top: 1px solid #aaa;
 
-          .text{
-            flex:4;
-            padding: 0  1rem ;
-            input:focus{
+          .text {
+            flex: 4;
+            padding: 0 1rem;
+            input:focus {
               outline: none;
             }
 
-            input{
+            input {
               width: 100%;
               height: 100%;
               font-size: medium;
               border: none;
               /* border-bottom: 1px solid #aaa ; */
-            }          
+            }
           }
-          .buttons{
-            flex:1;
+          .buttons {
+            flex: 1;
             display: flex;
             justify-content: center;
 
-            input{
+            input {
               text-align: center;
               background-color: #aaa;
-              border:none;
+              border: none;
               padding: 5px 10px;
               border-radius: 3px;
             }
@@ -202,13 +202,13 @@ body {
     }
   }
 
-  .treePage{
+  .treePage {
     height: calc(100vh - 54.4px);
-    
-    .pageContent{
+
+    .pageContent {
       height: 100%;
-      
-      .treeNode{
+
+      .treeNode {
         // height: 50px;
         display: flex;
         // flex-direction: column;
@@ -218,24 +218,25 @@ body {
         border-radius: 5px;
         background: #eeeeee;
 
-        img{
+        img {
           width: 100px;
           height: 150px;
           object-fit: cover;
           border-radius: 5px;
         }
 
-        .btnGroup{
+        .btnGroup {
           display: flex;
-          flex-direction: column; 
+          flex-direction: column;
           text-align: center;
-          button{
+          button {
             flex: 1;
             border: none;
           }
         }
-      }  
-      .parent{}
+      }
+      .parent {
+      }
     }
   }
 }
