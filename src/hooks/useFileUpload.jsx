@@ -6,11 +6,10 @@ import { v1 } from "uuid";
 const UseFileUpload = (fileUrl = "images", typePrefix = "IMG_") => {
   const [files, setFiles] = useState([]);
 
-  const uploadFiles = async () => {
+  const uploadFiles = async (otherFiles = files) => {
     const fileRefs = [];
     const promises = [];
-    // files.forEach(async (file) => {
-    for (const file of files){
+    for (const file of otherFiles){
       const fileRef = ref(storage, `${fileUrl}/${typePrefix}${v1()}`);
       fileRefs.push(await uploadBytes(fileRef, file));
     };

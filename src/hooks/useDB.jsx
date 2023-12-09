@@ -3,13 +3,16 @@ import {
   collection,
   deleteDoc,
   doc,
+  documentId,
   getDoc,
   getDocs,
   query,
   setDoc,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { db } from "../config/firebase";
+import { ShortInfoConverter } from "../components/users/ShortUserInfo";
 
 
 const readOne = async (...path) => {
@@ -20,6 +23,7 @@ const readOne = async (...path) => {
 
 
 const readMany = async ([...mquery], ...path) => {
+  console.count("readsFromDB")
   const querySnap = await getDocs(query(collection(db, ...path), ...mquery));
   return querySnap.docs.map((el) => el.data());
 };
@@ -53,5 +57,9 @@ const deleteOne = async (...path) => {
     .catch((error) => console.error(error.message));
 };
 
+
+export const getUserShortInfoByIds = async (ids) => {
+  return await readManyConv(ShortInfoConverter, [where(documentId(),"in",ids)], "users")
+}
 export { saveOne, saveOneConv, readMany, readOne, updateOne, deleteOne };
 
