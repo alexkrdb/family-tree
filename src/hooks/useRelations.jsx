@@ -12,18 +12,12 @@ export const useRelations = () => {
     const fetchRelations = async() => {
         console.log("Edges: fetching data from database");
         const data= await readMany([],"trees", currentUser.uid, "relations")
-        data.map(el => ({...el, type: "step"}));
-        console.log(data);
-        const rawData = await getDocs(collection(db, "trees",  currentUser.uid, "relations" ));
-        const processedRel = []
-        rawData.forEach((relation)=>{
-            const tempRel = relation.data();
-            tempRel.type = "step";
-            processedRel.push(tempRel)
-            // console.log(tempRel)
-        })
-        console.log("procesed",processedRel );
-        setEdges(processedRel);
+        data.map(el => {
+            el.type = "step";
+            return el;
+        });
+        console.log("procesed",data );
+        setEdges(data);
     }
 
     const saveRelations = () => {

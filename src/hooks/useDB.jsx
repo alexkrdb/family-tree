@@ -57,9 +57,9 @@ const deleteOne = async (...path) => {
     .catch((error) => console.error(error.message));
 };
 
+
 export const getUserShortInfoByIds = async (ids) => {
   return await readManyConv(ShortInfoConverter, [where(documentId(),"in",ids)], "users")
 }
-
 export { saveOne, saveOneConv, readMany, readOne, updateOne, deleteOne };
 

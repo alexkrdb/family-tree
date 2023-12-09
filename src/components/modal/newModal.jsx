@@ -34,6 +34,7 @@ function ModalOpenButton({ children: child }) {
   });
 }
 
+
 function ModalContentsBase({width="lg", ...props}) {
   const [isOpen, setIsOpen] = useContext(ModalContext);
   return (
