@@ -28,10 +28,10 @@ import { AuthContext } from "../../context/AuthContex";
 const Event = ({ data, setEvents, ...other }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const {currentUser} = useContext(AuthContext)
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const {currentUser} = useContext(AuthContext)
 
   const handleClose = () => {
     setAnchorEl(null);

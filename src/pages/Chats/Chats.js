@@ -25,8 +25,8 @@ function Chats() {
   const [chats, setChats] = useState([]);
   const { data, dispatch } = useContext(ChatContext);
 
-  const handleSelect = (   chat ) => {
-    dispatch({
+  const handleSelect = ( chat ) => {
+    chat.id !== data.chatId && dispatch({
       type: "CHANGE_CHAT",
       payload: chat,
       id: chat.id,
@@ -68,7 +68,7 @@ function Chats() {
               onClick={() => handleSelect(chat)}
             >
               <ListItemAvatar>
-                <Avatar src={chat.photoUrl}>
+                <Avatar src={chat.photoUrl && chat.photoUrl[0]}>
                   <GroupIcon/>
                 </Avatar>
               </ListItemAvatar>
@@ -118,6 +118,7 @@ const CreateChatModal = ({ currentUser, chatsLength, userFamily }) => {
               <SaveNewChatButton />
             </div>
           }
+          width="md"
         >
           <ChatCreator people={userFamily || []} key={userFamily?.length} />
         </ModalContents>

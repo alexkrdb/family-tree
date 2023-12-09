@@ -1,54 +1,61 @@
+import "./chats.scss";
 import { Message } from "./Message";
-import InfiniteScroll from "react-infinite-scroller";
-import { memo, useCallback, useContext, useState } from "react";
-import { AuthContext } from "../../context/AuthContex";
-import { readMany } from "../../hooks/useDB";
-import { Timestamp, endBefore, limit, orderBy, startAfter } from "firebase/firestore";
+import { memo, useContext, useEffect, useState } from "react";
+
+import { Button, List, ListItem } from "@mui/material";
 import { ChatContext } from "../../context/ChatContext";
+import { deleteOne } from "../../hooks/useDB";
+import { useRef } from "react";
 
-const MessagesList = ({chatState, setChatState}) => {
-  const { currentUser } = useContext(AuthContext);
+
+let loading = false
+
+const MessagesList = ({ chatState, setChatState, loadMore }) => {
   const { data } = useContext(ChatContext);
-  const messagesPerPage = 20;
+  const messagesEnd = useRef(null);
 
-
-  const loadMore = async () => {
-    const page = await readMany(
-      [limit(messagesPerPage), orderBy("time"), endBefore(chatState.lastDate)],
-      "chats",
-      data.chatId,
-      "messages"
-    );
-    const hasMorePages = page.length >= messagesPerPage
-    page.concat(chatState.messages);
-
-    setChatState({messages: page, hasMorePages: hasMorePages, lastDate: page[page.length - 1].time || chatState.lastDate});
+  const getUserById = (id) => {
+    return data.users.find((user) => user.id == id);
   };
-  console.log(chatState.messages);
+
+  const removeMessage = (messageId) => {
+    deleteOne("chats", data.chatId, "messages", messageId);
+    setChatState((old) => ({
+      ...old,
+      messages: old.messages.filter((message) => message.id != messageId),
+    }));
+  };
+
+  const scrollInto = (ref) => {
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    if (!loading) {
+      loading = true
+      loadMore().then(()=>{
+        loading = false
+      });
+    }
+  }, []);
+
   return (
-    <InfiniteScroll
-      pageStart={0}
-      loadMore={loadMore}
-      className="messages"
-      isReverse={true}
-      useWindow={false}
-      hasMore={chatState.hasMorePages}
-      loader={
-        <div className="loader" key={0}>
-          Loading ...
-        </div>
-      }
-    >
-      <ul>
-        {chatState.messages.map((message) => (
-            <Message
-              message={message}
-              user={message.user === currentUser.uid}
-              key={message.id}
-            />
-        ))}
-      </ul>
-    </InfiniteScroll>
+    <List className="messages">
+      <div ref={messagesEnd}></div>
+      {chatState.messages.map((message) => (
+        <Message
+          message={message}
+          key={message.id}
+          removeMessage={() => removeMessage(message.id)}
+          user={getUserById(message.user)}
+        />
+      ))}
+      {chatState.hasMorePages && (
+        <ListItem>
+          <Button onClick={loadMore}>Pobierz więcej</Button>
+        </ListItem>
+      )}
+    </List>
   );
 };
 

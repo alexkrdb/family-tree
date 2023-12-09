@@ -1,27 +1,52 @@
-import { memo, useContext } from "react";
+import { memo, useContext, useState } from "react";
 import { ChatContext } from "../../context/ChatContext";
 import {
   AppBar,
   Avatar,
-  ButtonGroup,
-  Divider,
   IconButton,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   Toolbar,
-  Typography,
+  Button,
+  TextField,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
 import GroupIcon from "@mui/icons-material/Group";
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import { Modal, ModalContents, ModalOpenButton } from "../modal/newModal";
+import EditIcon from "@mui/icons-material/Edit";
+import {
+  Modal,
+  ModalContents,
+  ModalDismissButton,
+  ModalOpenButton,
+} from "../modal/newModal";
 import "./chats.scss";
 
+import ChatMenuUsersList from "./ChatMenuUsersList";
+import ImageInput from "../imageInput/ImageInput";
+import UseFileUpload from "../../hooks/useFileUpload";
+import { updateOne } from "../../hooks/useDB";
+
 const ChatMenu = memo(() => {
-  const { data } = useContext(ChatContext);
-  console.log(data);
+  const defaultState = {
+    isEditing: false,
+    file: null,
+    newName: "",
+  }
+  const { data, dispatch } = useContext(ChatContext);
+  const [changes, setChanges] = useState(defaultState);
+  const [, ,uploadFiles] = UseFileUpload();
+
+  const saveChanges = async () => {
+    var photoUrl = data.data.photoUrl || null 
+    if(!!changes.file) 
+      photoUrl = await uploadFiles([changes.file])
+    
+    updateOne({name: changes.newName, photoUrl: photoUrl}, "chats", data.chatId)
+    
+    setChanges((old) => ({ ...old, isEditing: false }));
+    
+    dispatch({
+      type: "UPDATE_CHAT_INFO",
+      data: {...data.data, name: changes.newName, photoUrl: photoUrl}
+    })
+  };
   return (
     <Modal>
       <ModalOpenButton>
@@ -31,11 +56,11 @@ const ChatMenu = memo(() => {
         >
           <Toolbar sx={{ gap: "1rem" }}>
             <Avatar
-              src={data.data?.photoUrl}
+              src={data.data.photoUrl && data.data.photoUrl[0]}
               alt="ChatAvatar"
               sx={{ width: 50, height: 50 }}
             >
-              <GroupIcon fontSize="inherit"/>
+              <GroupIcon fontSize="inherit" />
             </Avatar>
             {data.data.name}
           </Toolbar>
@@ -43,63 +68,67 @@ const ChatMenu = memo(() => {
       </ModalOpenButton>
       <ModalContents
         title="O czacie"
-        actions={<></>}
+        actions={
+          <div>
+            <ModalDismissButton>
+              <Button variant="text" color="error" onClick={() => setChanges(defaultState)}>
+                Cofnij
+              </Button>
+            </ModalDismissButton>
+            <ModalDismissButton>
+              <Button variant="text" onClick={saveChanges}>
+                Zapisz
+              </Button>
+            </ModalDismissButton>
+          </div>
+        }
         key={data.chatId}
         width={"sm"}
         className="modal"
       >
         <div className="container flex column gap1rem" style={{ flex: "1" }}>
           <div className="flex">
-            <Avatar
-              src={data.data?.photoUrl}
-              alt="ChatAvatar"
-              sx={{ width: 100, height: 100 }}
-            >
-              <GroupIcon fontSize="inherit"/>
-            </Avatar>
-            <div className="flex column" style={{ flex: "3" }}>
-              <Typography variant="h5">{data.data.name}</Typography>
-            </div>
-          </div>
-          <div>
-          <Divider variant="middle" />
-            <div
-              className="flex gap1rem"
-              style={{
-                padding: "8px 16px 8px 16px",
-                justifyContent: "space-between",
-              }}
-            >
-              <div
-                className="centered"
-                style={{ width: "40px", height: "40px" }}
+            <label htmlFor="imageInput1">
+              <Avatar
+                src={changes.photoUrl || data.data.photoUrl && data.data.photoUrl[0]}
+                alt="ChatAvatar"
+                sx={{ width: 100, height: 100 }}
               >
-                <GroupIcon />
+                <GroupIcon fontSize="large" />
+              </Avatar>
+            </label>
+            {changes.isEditing && <ImageInput
+              id="imageInput1"
+
+              onChange={(e) =>
+                setChanges((old) => ({ ...old, file: e.target.files[0], photoUrl: URL.createObjectURL(e.target.files[0]) }))
+              }
+            />}
+            <div
+              className="flex"
+              style={{ flex: "3", justifyContent: "space-between" }}
+            >
+              <span></span>
+              <TextField
+                variant="standard"
+                defaultValue={data.data.name}
+                disabled={!changes.isEditing}
+                onChange={(e) =>
+                  setChanges((old) => ({ ...old, newName: e.target.value }))
+                }
+              />
+              <div>
+                <IconButton
+                  onClick={() =>
+                    setChanges((old) => ({ ...old, isEditing: !old.isEditing }))
+                  }
+                >
+                  <EditIcon />
+                </IconButton>
               </div>
-              <Typography variant="h6">Uczestnicy czatu</Typography>
-
-              <ButtonGroup>
-                <IconButton>
-                  <SearchIcon />
-                </IconButton>
-                <IconButton>
-                  <GroupAddIcon />
-                </IconButton>
-              </ButtonGroup>
             </div>
-          <Divider variant="middle" />
-
-            <List>
-              {data.data.users.map((user) => (
-                <ListItem sx={{ justifyContent: "center" }}>
-                  <ListItemAvatar>
-                    <Avatar alt={user} src={user.photoUrl} />
-                  </ListItemAvatar>
-                  <ListItemText primary={user} />
-                </ListItem>
-              ))}
-            </List>
           </div>
+          <ChatMenuUsersList />
         </div>
       </ModalContents>
     </Modal>
