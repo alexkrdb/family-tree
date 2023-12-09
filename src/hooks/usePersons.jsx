@@ -4,6 +4,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { useNodesState } from "reactflow";
 import Node from "../components/tree/Node";
+import { readMany } from "./useDB";
 //custom react hook
 //!simplifies complicates getting data from database and updating nodes
 export const usePersons = () => {
@@ -13,20 +14,19 @@ export const usePersons = () => {
 
   const fetchData = async () => {
     console.log("Nodes: fetching data from database");
-    const rawData = await getDocs(
-      collection(db, "trees", currentUser.uid, "persons")
-    );
 
+    const data = await readMany([], "trees", currentUser.uid, "persons");
+    data.map((el) => {
+      el.type = "treeNode"
+      return el
+    })
+    console.log(data)
     //adding nodeType attribute to nodes
-    const tempPersonArray = [];
-    rawData.forEach((person) => {
-      let tempPersonData = person.data();
-      // console.log(tempPersonData)
-      tempPersonData.type = "treeNode";
-      tempPersonArray.push(tempPersonData);
-    });
+    //   tempPersonData.type = "treeNode";
+    //   tempPersonArray.push(tempPersonData);
+    // });
 
-    setNodes(tempPersonArray);
+    setNodes(data);
   };
 
   const saveTree = () => {
