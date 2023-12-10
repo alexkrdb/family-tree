@@ -36,7 +36,7 @@ const SearchFamily = () => {
   };
 
   return (
-    <div className="container">
+    <div id="searchFamily" className="container">
       <Typography variant="h4" className="heading">
         Wyszukaj członka swojej rodziny
       </Typography>

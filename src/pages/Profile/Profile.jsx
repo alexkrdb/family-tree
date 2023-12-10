@@ -1,6 +1,4 @@
-import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { db } from "../../config/firebase";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContex";
 import "./Profile.scss";
@@ -12,7 +10,6 @@ import { useParams } from "react-router-dom";
 import ProfileTabBio from "../../components/profile/profileTabBio";
 import { Button } from "@mui/material";
 import { readOne, updateOne } from "../../hooks/useDB";
-import ProfileTabPrivacy from "../../components/profile/profileTabPrivacy";
 
 const Profile = () => {
   const { currentUser } = useContext(AuthContext);
@@ -28,7 +25,7 @@ const Profile = () => {
     };
 
     currentUser && fetchData();
-  }, [currentUser]);
+  }, [currentUser, userId]);
   const addFamilyMember = () => {
     const updatedData = { family: [userId] };
     updateOne(updatedData, "users", currentUser.uid);
