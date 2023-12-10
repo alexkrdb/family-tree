@@ -24,7 +24,7 @@ import "./comment.scss";
 import NewComment from "./newComment";
 import { deleteOne } from "../../hooks/useDB";
 import { AuthContext } from "../../context/AuthContex";
-
+import Gallery from "../gallery/Gallery";
 const Event = ({ data, setEvents, ...other }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -38,12 +38,12 @@ const Event = ({ data, setEvents, ...other }) => {
   };
 
   const handleDelete = () => {
-    if (window.confirm("Czy chcesz usunąć post?")){
+    if (window.confirm("Czy chcesz usunąć post?")) {
       deleteOne("posts", data.id);
-      setEvents(x => x.filter(event => event.id !== data.id))
+      setEvents((x) => x.filter((event) => event.id !== data.id));
     }
     handleClose();
-  }
+  };
 
   return (
     <Paper elevation={6} className="event" {...other}>
@@ -68,22 +68,21 @@ const Event = ({ data, setEvents, ...other }) => {
           <MoreVertIcon />
         </IconButton>
         <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-            {currentUser.uid === data.userId&&<MenuItem onClick={handleDelete} key={data.id}>Delete</MenuItem>}
-            <MenuItem>Share</MenuItem>
-        </Menu> 
+          {currentUser.uid === data.userId && (
+            <MenuItem onClick={handleDelete} key={data.id}>
+              Delete
+            </MenuItem>
+          )}
+          <MenuItem>Share</MenuItem>
+        </Menu>
       </div>
       <hr />
-
+      
       <div className="eventContent">
         <Typography variant="body1">{data?.text}</Typography>
-        <ImageList variant="masonry" cols={2} gap={8}>
-          {data.images?.map((image) => (
-            <ImageListItem key={image}>
-              <img src={image} alt={"Image"} loading="lazy" />
-            </ImageListItem>
-          ))}
-        </ImageList>
+        <Gallery images={data?.images} />
       </div>
+
       <hr />
 
       <div className="footer">
