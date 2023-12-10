@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import "./gallery.scss"
+import React, { useState } from "react";
+import { ImageList, ImageListItem } from "@mui/material";
+import "./gallery.scss";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
-
-const Gallery = () => {
-  const images = [];
-
+const Gallery = ({ images }) => {
   const [lightboxImage, setLightboxImage] = useState(null);
 
   const openLightbox = (image) => {
@@ -15,24 +15,51 @@ const Gallery = () => {
     setLightboxImage(null);
   };
 
+  const goToPrev = (event) => {
+    event.stopPropagation();
+    const currentIndex = images.indexOf(lightboxImage);
+    if (currentIndex > 0) {
+      setLightboxImage(images[currentIndex - 1]);
+    }
+  };
+
+  const goToNext = (event) => {
+    event.stopPropagation();
+    const currentIndex = images.indexOf(lightboxImage);
+    if (currentIndex < images.length - 1) {
+      setLightboxImage(images[currentIndex + 1]);
+    }
+  };
+
   return (
-    <div>
-      <div className="gallery">
+    <div className="gallery">
+      <ImageList className="image-list" cols={2}>
         {images.map((image, index) => (
-          <img
-            key={index}
-            className="image-card"
-            src={image}
-            alt={`Image ${index}`}
-            onClick={() => openLightbox(image)}
-          />
+          <ImageListItem key={index} cols={1}>
+            <img
+              className="image-card"
+              src={image}
+              alt={`${index}`}
+              onClick={() => openLightbox(image)}
+            />
+          </ImageListItem>
         ))}
-      </div>
+      </ImageList>
 
       {lightboxImage && (
         <div className="lightbox-overlay" onClick={closeLightbox}>
           <div className="lightbox-container">
-            <img className="lightbox-image" src={lightboxImage} alt="Lightbox" />
+            <div className="arrow-icon" onClick={(e) => goToPrev(e)}>
+              <ArrowBackIosIcon sx={{ color: "white" }} />
+            </div>
+            <img
+              className="lightbox-image"
+              src={lightboxImage}
+              alt="Lightbox"
+            />
+            <div className="arrow-icon" onClick={(e) => goToNext(e)}>
+              <ArrowForwardIosIcon sx={{ color: "white" }} />
+            </div>
           </div>
         </div>
       )}
