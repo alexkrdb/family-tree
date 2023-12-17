@@ -9,38 +9,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
 
-  nav  {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 2rem;
-    text-decoration: none;
-    border-bottom: 1px solid #aaa;
-    box-shadow: 0px 0px 1rem #888;
-    // margin-bottom: 1rem;
-
-    ul {
-      padding: 0;
-      margin: 0;
-      list-style: none;
-      display: flex;
-      gap: 1rem;
-    }
-
-    a {
-      color: #333;
-      text-decoration: inherit;
-    }
-
-    .buttonGroup {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-    }
-
-    .dropdown {
-      display: block;
-    }
+  #root {
+    height: 100vh;
   }
 
   .chatPage {
@@ -95,20 +65,20 @@ body {
           scrollbar-color: #fff #fff;
           scrollbar-3dlight-color: #fff;
           scrollbar-arrow-color: #aaa;
-          
+
           .message {
             display: flex;
             flex-direction: column;
             padding: 5px 15px;
             align-items: baseline;
 
-            .messageTime{
+            .messageTime {
               padding-left: 5px;
               font-size: 12px;
               font-weight: 400;
               color: #888;
             }
-            .messageAuthor{
+            .messageAuthor {
               font-weight: 500;
               font-size: medium;
             }
@@ -156,38 +126,27 @@ body {
     }
   }
 
-  .login {
-    content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    form {
+  .loginRegister {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .content {
+      padding: 3rem;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 1rem 0;
-      gap: 2rem;
-    }
-  }
+      margin-bottom: 20px;
+      width: 100%;
 
-  .register {
-    content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem 0;
-      gap: 2rem;
+      .form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        gap: 2rem;        
+      }
     }
   }
 

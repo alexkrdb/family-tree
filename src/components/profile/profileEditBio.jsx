@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
-import { db } from "../../config/firebase";
-import { doc, updateDoc } from "firebase/firestore";
+import { updateOne } from "../../hooks/useDB";
+import { getLocalUser, setLocalUser } from "../../hooks/useLocalUser";
+import { AuthContext } from "../../context/AuthContex";
 import {
   Typography,
   Button,
@@ -11,15 +12,25 @@ import {
   TableRow,
   Paper,
   TextField,
-  Grid,
 } from "@mui/material";
-import { AuthContext } from "../../context/AuthContex";
-import { getLocalUser, setLocalUser } from "../../hooks/useLocalUser";
-import { updateOne } from "../../hooks/useDB";
 
+const tableCellStyle = {
+  fontWeight: "bold",
+  minWidth: "60px",
+  padding: "10px",
+};
+
+const dataCellStyle = {
+  textAlign: "left",
+  padding: "10px",
+};
+
+const buttonCellStyle = {
+  textAlign: "center",
+  mt: 2,
+};
 const ProfileEditBio = ({ bio, setIsEdit, ...other }) => {
   const [editedData, setEditedData] = useState(bio);
-
   const { currentUser } = useContext(AuthContext);
 
   const handleCancelChanges = () => {
@@ -32,46 +43,46 @@ const ProfileEditBio = ({ bio, setIsEdit, ...other }) => {
     setLocalUser({ ...user, bio: editedData });
     setIsEdit(false);
   };
+
   return (
-    <div {...other} className="tab ">
-      <Typography variant="h6">Edit bio</Typography>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 250, maxWidth: 900 }} aria-label="simple table">
+    <div {...other} className="tab" elevation={3} sx={{ padding: "1rem" }}>
+      <Typography variant="h5" gutterBottom>
+        Edycja danych
+      </Typography>
+      <TableContainer className="tableContainer">
+        <Table>
           <TableBody>
             <TableRow>
-              <TableCell component="th" scope="row">
+              <TableCell component="th" scope="row" sx={tableCellStyle}>
                 Imie i Nazwisko
               </TableCell>
-              <TableCell align="left">
+              <TableCell align="left" sx={dataCellStyle}>
                 <TextField
-                  id="outlined-basic"
-                  label="fName"
-                  variant="outlined"
+                  label="Imie"
                   defaultValue={editedData?.fName}
                   onChange={(e) =>
                     setEditedData({ ...editedData, fName: e.target.value })
                   }
+                  sx={{mr: 2}}
                 />
                 <TextField
-                  id="outlined-basic"
-                  label="lName"
-                  variant="outlined"
+                  label="Nazwisko"
                   defaultValue={editedData?.lName}
                   onChange={(e) =>
                     setEditedData({ ...editedData, lName: e.target.value })
                   }
+                  sx={{ml: 2}}
                 />
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell component="th" scope="row">
+              <TableCell component="th" scope="row" sx={tableCellStyle}>
                 Data urodzenia
               </TableCell>
-              <TableCell align="left">
+              <TableCell align="left" sx={dataCellStyle}>
                 <TextField
-                  id="outlined-basic"
-                  label="dBirth"
-                  variant="outlined"
+                  type="date"
+                  fullWidth
                   defaultValue={editedData?.dBirth
                     ?.toDate()
                     .toLocaleDateString()}
@@ -82,30 +93,12 @@ const ProfileEditBio = ({ bio, setIsEdit, ...other }) => {
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell component="th" scope="row">
-                Państwo
-              </TableCell>
-              <TableCell align="left">
-                <TextField
-                  id="outlined-basic"
-                  label="country"
-                  variant="outlined"
-                  defaultValue={editedData?.country}
-                  onChange={(e) =>
-                    setEditedData({ ...editedData, country: e.target.value })
-                  }
-                />
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell component="th" scope="row">
+              <TableCell component="th" scope="row" sx={tableCellStyle}>
                 Miejscowość
               </TableCell>
-              <TableCell align="left">
+              <TableCell align="left" sx={dataCellStyle}>
                 <TextField
-                  id="outlined-basic"
-                  label="location"
-                  variant="outlined"
+                  fullWidth
                   defaultValue={editedData?.location}
                   onChange={(e) =>
                     setEditedData({ ...editedData, location: e.target.value })
@@ -114,28 +107,38 @@ const ProfileEditBio = ({ bio, setIsEdit, ...other }) => {
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell component="th" scope="row">
-                Bio
+              <TableCell component="th" scope="row" sx={tableCellStyle}>
+                Biografia
               </TableCell>
-              <TableCell align="left">
+              <TableCell align="left" sx={dataCellStyle}>
                 <TextField
-                  id="outlined-basic"
-                  label="biography"
                   multiline
                   fullWidth
-                  variant="outlined"
-                  defaultValue={editedData?.biography}
+                  defaultValue={editedData?.bio}
                   onChange={(e) =>
-                    setEditedData({ ...editedData, biography: e.target.value })
+                    setEditedData({ ...editedData, bio: e.target.value })
                   }
                 />
               </TableCell>
             </TableRow>
           </TableBody>
         </Table>
+        <Button
+          variant="outlined"
+          onClick={handleCancelChanges}
+          sx={{ mt: 2, mr: 2 }}
+        >
+          Anuluj
+        </Button>
+
+        <Button
+          variant="contained"
+          onClick={handleSaveChanges}
+          sx={{ mt: 2, ml: 2 }}
+        >
+          Zapisz
+        </Button>
       </TableContainer>
-      <Button onClick={handleSaveChanges}>Save</Button>
-      <Button onClick={handleCancelChanges}>Cancel</Button>
     </div>
   );
 };

@@ -67,7 +67,6 @@ const ProfileTab = (props) => {
         </div>
 
         <div className="privacy" style={hidden(2)}>
-          <Typography variant="h6">My privacy tab</Typography>
           <ProfileTabPrivacy user={user}/>
         </div>
       </div>

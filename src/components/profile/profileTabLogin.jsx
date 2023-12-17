@@ -8,6 +8,7 @@ import {
   TableCell,
   TableRow,
   Paper,
+  TableHead,
 } from "@mui/material";
 import ProfileEditLogin from "../../components/profile/profileEditLogin";
 
@@ -32,15 +33,23 @@ const ProfileTabLogin = (props) => {
   };
 
   return (
-    <div>
+    <Paper sx={{ padding: "1rem" }}>
       <ProfileEditLogin
         user={user}
         setIsEdit={setIsEdit}
         style={hidden(!isEdit)}
       />
-      <TableContainer component={Paper} style={hidden(isEdit)}>
-        <Typography variant="h6">My login data</Typography>
-        <Table sx={{ minWidth: 250, maxWidth: 900 }} aria-label="simple table">
+      <TableContainer style={hidden(isEdit)} className="tableContainer">
+        <Table sx={{ minWidth: 150, maxWidth: 900 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell sx={tableCellStyle} align="center" colSpan={2}>
+                <Typography variant="h5" gutterBottom>
+                  Dane autoryzacji
+                </Typography>
+              </TableCell>
+            </TableRow>
+          </TableHead>
           <TableBody>
             <TableRow>
               <TableCell component="th" scope="row" sx={tableCellStyle}>
@@ -60,9 +69,11 @@ const ProfileTabLogin = (props) => {
             </TableRow>
           </TableBody>
         </Table>
-        <Button onClick={updateData}>Edytuj</Button>
+        <Button variant="contained" onClick={updateData} sx={{ mt: 2 }}>
+          Edytuj
+        </Button>
       </TableContainer>
-    </div>
+    </Paper>
   );
 };
 

@@ -25,6 +25,7 @@ import NewComment from "./newComment";
 import { deleteOne } from "../../hooks/useDB";
 import { AuthContext } from "../../context/AuthContex";
 import Gallery from "../gallery/Gallery";
+
 const Event = ({ data, setEvents, ...other }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -106,13 +107,10 @@ const Event = ({ data, setEvents, ...other }) => {
           <div>
             <Typography variant="h3">Comments</Typography>
             <div
-              style={{ height: "50vh", overflowY: "scroll", margin: "1rem 0" }}
-            >
+              style={{ height: "50vh", overflowY: "scroll", margin: "1rem 0" }}>
               {data?.comments?.map((comment) => {
-                // console.log(comment);
-                return <Comment comment={comment} />;
+                return <Comment comment={comment} postId={data.id}/>;
               })}
-              {/* Comment input box */}
             </div>
             <NewComment postId={data.id} />
           </div>

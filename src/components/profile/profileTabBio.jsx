@@ -8,6 +8,7 @@ import {
   TableCell,
   TableRow,
   Paper,
+  TableHead,
 } from "@mui/material";
 import ProfileEditBio from "../../components/profile/profileEditBio";
 
@@ -15,8 +16,7 @@ const hidden = (bool) => {
   if (bool) return { display: "none" };
 };
 
-const ProfileTabBio = ({user, logged}) => {
-
+const ProfileTabBio = ({ user, logged }) => {
   const [isEdit, setIsEdit] = useState(false);
 
   const renderBio = () => {
@@ -34,32 +34,48 @@ const ProfileTabBio = ({user, logged}) => {
     }
     return null;
   };
+
   const tableCellStyle = {
     fontWeight: "bold",
     minWidth: "60px",
+    padding: "10px",
   };
 
   const dataCellStyle = {
     textAlign: "left",
+    padding: "10px",
   };
+
   const updateData = () => {
     setIsEdit(true);
   };
 
   return (
-    <div>
+    <Paper sx={{ padding: "1rem" }}>
       <ProfileEditBio
         bio={user.bio}
         setIsEdit={setIsEdit}
         style={hidden(!isEdit)}
       />
-      <TableContainer component={Paper} style={hidden(isEdit)}>
-        <Typography variant="h6">My bio</Typography>
-        <Table sx={{ minWidth: 250, maxWidth: 900 }} aria-label="simple table">
+      <TableContainer
+        style={hidden(isEdit)}
+        className="tableContainer"
+        sx={{ width: "95%", display: "block", overflowX: "auto" }}
+      >
+        <Table sx={{ minWidth: 150, maxWidth: 900 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell sx={tableCellStyle} align="center" colSpan={2}>
+                <Typography variant="h5" gutterBottom>
+                  Dane biograficzne
+                </Typography>
+              </TableCell>
+            </TableRow>
+          </TableHead>
           <TableBody>
             <TableRow>
               <TableCell component="th" scope="row" sx={tableCellStyle}>
-                Imie i Nazwisko
+                Imie i nazwisko
               </TableCell>
               <TableCell align="left" sx={dataCellStyle}>
                 {user?.bio?.fName} {user?.bio?.lName}
@@ -75,26 +91,31 @@ const ProfileTabBio = ({user, logged}) => {
             </TableRow>
             <TableRow>
               <TableCell component="th" scope="row" sx={tableCellStyle}>
-                Państwo
-              </TableCell>
-              <TableCell align="left" sx={dataCellStyle}>
-                {user?.bio?.country}
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell component="th" scope="row" sx={tableCellStyle}>
-                Miejscowość
+                Miejscowośc
               </TableCell>
               <TableCell align="left" sx={dataCellStyle}>
                 {user?.bio?.location}
               </TableCell>
             </TableRow>
-            {renderBio()}
+            <TableRow>
+              <TableCell component="th" scope="row" sx={tableCellStyle}>
+                Biografia
+              </TableCell>
+              <TableCell align="left" sx={dataCellStyle}>
+                {user?.bio?.bio}
+              </TableCell>
+            </TableRow>
           </TableBody>
         </Table>
-         <Button onClick={updateData}> Edytuj </Button>
+        <Button
+          variant="contained"
+          onClick={updateData}
+          sx={{ mt: 2, textAlign: "center" }}
+        >
+          Edytuj
+        </Button>
       </TableContainer>
-    </div>
+    </Paper>
   );
 };
 
