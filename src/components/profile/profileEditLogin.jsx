@@ -1,172 +1,258 @@
 import React, { useContext, useState } from "react";
-import {
-  Typography,
-  Button,
-  Table,
-  TableContainer,
-  TableBody,
-  TableCell,
-  TableRow,
-  Paper,
-  TextField,
-} from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { AuthContext } from "../../context/AuthContex";
 import {
-  getAuth,
   updateEmail,
   updatePassword,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
 } from "firebase/auth";
+import {
+  Modal,
+  ModalContents,
+  ModalDismissButton,
+  ModalOpenButton,
+} from "../modal/newModal";
+import "./helper.scss";
+import { updateOne } from "../../hooks/useDB";
 
-const tableCellStyle = {
-  fontWeight: "bold",
-  minWidth: "60px",
-  padding: "10px",
-};
-
-const dataCellStyle = {
-  textAlign: "left",
-  padding: "10px",
-};
-
-const ProfileEditLogin = ({ setIsEdit, ...other }) => {
-  const {currentUser} = useContext(AuthContext);
-  const [editedData, setEditedData] = useState({
+export const EditEmail = ({ ...props }) => {
+  const { currentUser } = useContext(AuthContext);
+  const [newEmail, setNewEmail] = useState({
     email: currentUser.email,
-    newPassword: "",
+    pwd: "",
   });
-
-  const [errors, setErrors] = useState({
+  const defaultError = {
     email: "",
-    newPassword: "",
-  });
+    pwd: "",
+  }
+  const [errors, setErrors] = useState(defaultError);
 
-  const handleCancelChanges = () => {
-    setIsEdit(false);
-  };
-
-  const validateEmail = (email) => {
+  const validateEmail = () => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
+    return regex.test(newEmail.email);
   };
 
-  const validatePassword = (password) => {
-    const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
-    return regex.test(password);
-  };
-
-  const validateField = (name, value) => {
-    switch (name) {
-      case "email":
-        return validateEmail(value)
-          ? ""
-          : "Proszę wprowadzić poprawny adres email";
-      case "password":
-        return validatePassword(value)
-          ? ""
-          : "Hasło musi mieć co najmniej 6 znaków, w tym co najmniej jedną literę i jedną cyfrę";
-      default:
-        return "";
-    }
-  };
-
-  const handleSaveChanges = async () => {
-    try {
-      const emailError = validateField("email", editedData.email);
-      const newPasswordError = validateField(
-        "password",
-        editedData.newPassword
-      );
-  
+  const saveNewEmail = async (event) => {
+    if (!validateEmail()) {
       setErrors({
         ...errors,
-        email: emailError,
-        newPassword: newPasswordError,
+        email: "Proszę wprowadzić poprawny adres email",
       });
-  
-      if (emailError!=="" || newPasswordError!=="") {
-        return;
-      }
-  
-      if (editedData.email !== currentUser) {
-        await updateEmail(currentUser, editedData.email);
-        console.log("Succesful email update");
-      }
-  
-      if (editedData.newPassword) {
-        await updatePassword(currentUser, editedData.newPassword) 
-        console.log("Succesful password update");
-      }
-  
-      setIsEdit(false);
+      event.stopPropagation();
+      return;
+    }
+
+    const credential = EmailAuthProvider.credential(
+      currentUser.email,
+      newEmail.pwd
+    );
+
+    reauthenticateWithCredential(currentUser, credential)
+      .catch((error) => {
+        console.log(error);
+        setErrors({
+          ...errors,
+          pwd: "Nieprawidłowe hasło",
+        });
+        return
+      })
+      .then(() => {
+        updateEmail(currentUser, newEmail.email).then(() => {
+          updateOne({ email: newEmail.email }, "users", currentUser.uid);
+          console.log("Successful email update");
+          setErrors(defaultError);
+        });
+      });
+  };
+  return (
+    <Modal>
+      <ModalOpenButton>
+        <Button variant="contained">Edytuj</Button>
+      </ModalOpenButton>
+      <ModalContents
+        width="sm"
+        title="Zmiana email"
+        actions={
+          <div>
+            <ModalDismissButton>
+              <Button color="error">Cofnij</Button>
+            </ModalDismissButton>
+            <Button onClick={saveNewEmail}>Zapisz</Button>
+          </div>
+        }
+      >
+        <div className="grid c2">
+          <span className="grid-item">Nowy email:</span>
+          <span className="grid-item">
+            <TextField
+              variant="standard"
+              fullWidth
+              value={newEmail.email}
+              onChange={(e) =>
+                setNewEmail((old) => ({
+                  ...old,
+                  email: e.target.value,
+                }))
+              }
+              label="Wprowadź nowy email"
+              error={!!errors.email}
+              helperText={errors.email}
+            />
+          </span>
+          <span className="grid-item">Hasło:</span>
+          <span className="grid-item">
+            <TextField
+              variant="standard"
+              type="password"
+              fullWidth
+              value={newEmail.pwd}
+              onChange={(e) =>
+                setNewEmail((old) => ({
+                  ...old,
+                  pwd: e.target.value,
+                }))
+              }
+              label="Wprowadź hasło"
+              error={!!errors.pwd}
+              helperText={errors.pwd}
+            />
+          </span>
+        </div>
+      </ModalContents>
+    </Modal>
+  );
+};
+
+export const EditPassword = ({ ...props }) => {
+  const { currentUser } = useContext(AuthContext);
+  const [newPwd, setNewPwd] = useState({
+    newPwd: "",
+    repeatPwd: "",
+    oldPwd: "",
+  });
+  const [errors, setErrors] = useState({
+    oldPwd: "",
+    newPwd: "",
+    repeatPwd: "",
+  });
+
+  const validatePwd = () => {
+    const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+    return regex.test(newPwd.newPwd);
+  };
+
+  const saveNewPwd = (event) => {
+    if (!validatePwd()) {
+      setErrors({
+        ...errors,
+        newPwd:
+          "Hasło musi mieć co najmniej 6 znaków, w tym co najmniej jedną literę i jedną cyfrę",
+      });
+      event.stopPropagation();
+      return;
+    }
+    try {
+      const credential = EmailAuthProvider.credential(
+        currentUser.email,
+        newPwd.oldPwd
+      );
+
+      reauthenticateWithCredential(currentUser, credential)
+        .then(async () => {
+          await updatePassword(currentUser, newPwd.newPwd);
+          console.log("Successful password update");
+        })
+        .catch((error) => {
+          console.log(error);
+          setErrors({
+            ...errors,
+            oldPwd: "Nieprawidłowe stare hasło",
+          });
+          event.stopPropagation();
+        });
     } catch (error) {
-      console.error("Error updating user data:", error);
+      console.log("Error updating password:", error);
+      event.stopPropagation();
     }
   };
 
   return (
-    <div {...other} className="tab" elevation={3} sx={{ padding: "1rem" }}>
-      <Typography variant="h5">Edycja danych autoryzacji</Typography>
-      <TableContainer className="tableContainer">
-        <Table sx={{ minWidth: 250, maxWidth: 900 }} aria-label="simple table">
-          <TableBody>
-            <TableRow>
-              <TableCell component="th" scope="row" sx={tableCellStyle}>
-                Email:
-              </TableCell>
-              <TableCell align="left" sx={dataCellStyle}>
-                <TextField
-                  label="email"
-                  variant="outlined"
-                  value={editedData.email}
-                  fullWidth
-                  onChange={(e) =>
-                    setEditedData((old) => ({ ...old, email: e.target.value }))
-                  }
-                  error={errors.email!==""}
-                  helperText={errors.email}
-                />
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell component="th" scope="row" sx={tableCellStyle}>
-                Hasło:
-              </TableCell>
-              <TableCell align="left" sx={dataCellStyle}>
-                <TextField
-                  label="nowe hasło"
-                  variant="outlined"
-                  type="password"
-                  fullWidth
-                  onChange={(e) =>
-                    setEditedData((old) => ({
-                      ...old,
-                      newPassword: e.target.value,
-                    }))
-                  }
-                  error={errors.newPassword!==""}
-                  helperText={errors.newPassword}
-                />
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-        <Button
-          variant="outlined"
-          onClick={handleCancelChanges}
-          sx={{ mt: 2, mr: 2 }}
-        >
-          Anuluj
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleSaveChanges}
-          sx={{ mt: 2, ml: 2 }}
-        >
-          Zapisz
-        </Button>
-      </TableContainer>
-    </div>
+    <Modal>
+      <ModalOpenButton>
+        <Button variant="contained">Edytuj</Button>
+      </ModalOpenButton>
+      <ModalContents
+        width="sm"
+        title="Zmiana hasła"
+        actions={
+          <div>
+            <ModalDismissButton>
+              <Button color="error">Cofnij</Button>
+            </ModalDismissButton>
+            <ModalDismissButton>
+              <Button onClick={saveNewPwd}>Zapisz</Button>
+            </ModalDismissButton>
+          </div>
+        }
+      >
+        <div className="grid c2">
+          <span className="grid-item">Stare hasło:</span>
+          <span className="grid-item">
+            <TextField
+              variant="standard"
+              type="password"
+              fullWidth
+              value={newPwd.oldPwd}
+              onChange={(e) =>
+                setNewPwd((old) => ({
+                  ...old,
+                  oldPwd: e.target.value,
+                }))
+              }
+              label="Wprowadz stare hasło"
+              error={!!errors.oldPwd}
+              helperText={errors.oldPwd}
+            />
+          </span>
+          <span className="grid-item">Nowe hasło:</span>
+          <span className="grid-item">
+            <TextField
+              variant="standard"
+              type="password"
+              fullWidth
+              value={newPwd.newPwd}
+              onChange={(e) =>
+                setNewPwd((old) => ({
+                  ...old,
+                  newPwd: e.target.value,
+                }))
+              }
+              label="Wprowadz nowe hasło"
+              error={!!errors.newPwd}
+              helperText={errors.newPwd}
+            />
+          </span>
+          <span className="grid-item">Powtórz nowe hasło:</span>
+          <span className="grid-item">
+            <TextField
+              variant="standard"
+              type="password"
+              fullWidth
+              value={newPwd.repeatPwd}
+              onChange={(e) =>
+                setNewPwd((old) => ({
+                  ...old,
+                  repeatPwd: e.target.value,
+                }))
+              }
+              label="Powtórz nowe hasło"
+              error={!!errors.repeatPwd}
+              helperText={errors.repeatPwd}
+            />
+          </span>
+        </div>
+      </ModalContents>
+    </Modal>
   );
 };
-
-export default ProfileEditLogin;

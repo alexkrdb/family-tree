@@ -1,7 +1,4 @@
 import {
-  Button,
-  ImageListItem,
-  ImageList,
   Paper,
   Typography,
   Avatar,
@@ -10,7 +7,6 @@ import {
   Menu,
   MenuItem,
   IconButton,
-  TextField,
 } from "@mui/material";
 import CommentIcon from "@mui/icons-material/Comment";
 import MModal from "../modal/MModal";
@@ -22,17 +18,23 @@ import { useContext, useState } from "react";
 
 import "./comment.scss";
 import NewComment from "./newComment";
-import { deleteOne } from "../../hooks/useDB";
+import { deleteOne, updateOne } from "../../hooks/useDB";
 import { AuthContext } from "../../context/AuthContex";
 import Gallery from "../gallery/Gallery";
+import { arrayRemove, arrayUnion } from "firebase/firestore";
 
 const Event = ({ data, setEvents, ...other }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const { currentUser } = useContext(AuthContext);
+  const [liked, setLiked] = useState({
+    likes: data.likes.length,
+    liked: data.likes.includes(currentUser.uid),
+  });
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const {currentUser} = useContext(AuthContext)
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -46,6 +48,16 @@ const Event = ({ data, setEvents, ...other }) => {
     handleClose();
   };
 
+  const handleLike = () => {
+    if (!liked.liked) {
+      updateOne({ likes: arrayUnion(currentUser.uid) }, "posts", data.id);
+      setLiked((old) => ({ likes: old.likes + 1, liked: true }));
+    } else {
+      updateOne({ likes: arrayRemove(currentUser.uid) }, "posts", data.id);
+      setLiked((old) => ({ likes: old.likes - 1, liked: false }));
+    }
+  };
+
   return (
     <Paper elevation={6} className="event" {...other}>
       <div className="header">
@@ -56,7 +68,7 @@ const Event = ({ data, setEvents, ...other }) => {
           <div style={{ display: "flex", flexDirection: "column" }}>
             <Typography variant="h6">{data.author?.name}</Typography>
             <Typography color={grey[500]} variant="body2">
-              {data.insertedAt.toDate().toLocaleDateString("en-GB", {
+              {data.insertedAt.toDate().toLocaleDateString("pl-PL", {
                 month: "short",
                 day: "numeric",
                 hour: "numeric",
@@ -71,14 +83,13 @@ const Event = ({ data, setEvents, ...other }) => {
         <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
           {currentUser.uid === data.userId && (
             <MenuItem onClick={handleDelete} key={data.id}>
-              Delete
+              Usuń
             </MenuItem>
           )}
-          <MenuItem>Share</MenuItem>
         </Menu>
       </div>
       <hr />
-      
+
       <div className="eventContent">
         <Typography variant="body1">{data?.text}</Typography>
         <Gallery images={data?.images} />
@@ -90,33 +101,44 @@ const Event = ({ data, setEvents, ...other }) => {
         <FormControlLabel
           value="like"
           control={
-            <Checkbox
-              icon={<FavoriteBorder />}
-              color="error"
-              checkedIcon={<Favorite />}
-            />
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Typography>{liked.likes > 0 && liked.likes}</Typography>
+              <Checkbox
+                icon={<FavoriteBorder />}
+                color="error"
+                checkedIcon={<Favorite />}
+                checked={liked.liked}
+                onChange={handleLike}
+              />
+            </div>
           }
           label={
             <Typography color="error" variant="button">
-              Like
+              Lubię to
             </Typography>
           }
           labelPlacement="right"
         />
-        <MModal buttonText="Comments" startIcon={<CommentIcon />}>
+
+        <MModal buttonText="Komentarze" startIcon={<CommentIcon />}>
           <div>
-            <Typography variant="h3">Comments</Typography>
-            <div
-              style={{ height: "50vh", overflowY: "scroll", margin: "1rem 0" }}>
-              {data?.comments?.map((comment) => {
-                return <Comment comment={comment} postId={data.id}/>;
-              })}
-            </div>
-            <NewComment postId={data.id} />
+            <Typography variant="h3">Komentarze</Typography>
+            <CommentsList data={data} key={data.comments?.length}/>
+            <NewComment postId={data.id} setEvents={setEvents} />
           </div>
         </MModal>
       </div>
     </Paper>
+  );
+};
+
+const CommentsList = ({data}) => {
+  return (
+    <div style={{ height: "50vh", overflowY: "scroll", margin: "1rem 0" }}>
+      {data?.comments?.map((comment) => {
+        return <Comment comment={comment} postId={data.id} />;
+      })}
+    </div>
   );
 };
 

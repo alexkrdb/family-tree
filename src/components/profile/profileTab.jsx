@@ -30,7 +30,7 @@ const ProfileTab = (props) => {
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
   };
-  const buttons = ["My login data", "My bio", "My privacy"];
+  const buttons = ["Dane logowania", "Biografia", "Prywatność"];
   return (
     <div className="tabs-container">
       <div className="tabs">
@@ -55,7 +55,7 @@ const ProfileTab = (props) => {
             left: "10px",
           }}
         >
-          Delete profile
+          Usuń konto
         </Button>
       </div>
       <div className="content">

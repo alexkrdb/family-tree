@@ -1,120 +1,33 @@
-import React, { useState } from "react";
-import {
-  Typography,
-  Button,
-  Table,
-  TableContainer,
-  TableBody,
-  TableCell,
-  TableRow,
-  Paper,
-  TableHead,
-} from "@mui/material";
+import { Typography, Button, Paper } from "@mui/material";
 import ProfileEditBio from "../../components/profile/profileEditBio";
-
-const hidden = (bool) => {
-  if (bool) return { display: "none" };
-};
-
-const ProfileTabBio = ({ user, logged }) => {
-  const [isEdit, setIsEdit] = useState(false);
-
-  const renderBio = () => {
-    if (user.privacySettings?.includes("bio")) {
-      return (
-        <TableRow>
-          <TableCell component="th" scope="row" sx={{ fontWeight: "bold" }}>
-            Bio
-          </TableCell>
-          <TableCell align="left">
-            <Typography variant="body1">{user?.bio?.biography}</Typography>
-          </TableCell>
-        </TableRow>
-      );
-    }
-    return null;
-  };
-
-  const tableCellStyle = {
-    fontWeight: "bold",
-    minWidth: "60px",
-    padding: "10px",
-  };
-
-  const dataCellStyle = {
-    textAlign: "left",
-    padding: "10px",
-  };
-
-  const updateData = () => {
-    setIsEdit(true);
-  };
-
+import "./helper.scss"
+const ProfileTabBio = ({ user, ...props }) => {
   return (
-    <Paper sx={{ padding: "1rem" }}>
-      <ProfileEditBio
-        bio={user.bio}
-        setIsEdit={setIsEdit}
-        style={hidden(!isEdit)}
-      />
-      <TableContainer
-        style={hidden(isEdit)}
-        className="tableContainer"
-        sx={{ width: "95%", display: "block", overflowX: "auto" }}
-      >
-        <Table sx={{ minWidth: 150, maxWidth: 900 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell sx={tableCellStyle} align="center" colSpan={2}>
-                <Typography variant="h5" gutterBottom>
-                  Dane biograficzne
-                </Typography>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell component="th" scope="row" sx={tableCellStyle}>
-                Imie i nazwisko
-              </TableCell>
-              <TableCell align="left" sx={dataCellStyle}>
-                {user?.bio?.fName} {user?.bio?.lName}
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell component="th" scope="row" sx={tableCellStyle}>
-                Data urodzenia
-              </TableCell>
-              <TableCell align="left" sx={dataCellStyle}>
-                {user && user.bio?.dBirth.toDate().toLocaleDateString()}
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell component="th" scope="row" sx={tableCellStyle}>
-                Miejscowośc
-              </TableCell>
-              <TableCell align="left" sx={dataCellStyle}>
-                {user?.bio?.location}
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell component="th" scope="row" sx={tableCellStyle}>
-                Biografia
-              </TableCell>
-              <TableCell align="left" sx={dataCellStyle}>
-                {user?.bio?.bio}
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-        <Button
-          variant="contained"
-          onClick={updateData}
-          sx={{ mt: 2, textAlign: "center" }}
-        >
-          Edytuj
-        </Button>
-      </TableContainer>
+    <Paper className="" sx={{ padding: "1rem", width: "100%" }}>
+      <Typography variant="h5" justifyContent={"center"}>
+        Dane biograficzne
+      </Typography>
+      <div className="grid c3">
+        <span className="grid-item">Imie i nazwisko:</span>
+        <span className="grid-item">
+          {user?.bio?.fName} {user?.bio?.lName}
+        </span>
+        <hr className="grid-border" />
+        <span className="grid-item">Data urodzenia:</span>
+        <span className="grid-item">
+          {user && user.bio?.dBirth.toDate().toLocaleDateString()}
+        </span>
+        <hr className="grid-border" />
+        <span className="grid-item">Miejscowośc:</span>
+        <span className="grid-item">{user?.bio?.location}</span>
+        <hr className="grid-border" />
+        <span className="grid-item">Biografia:</span>
+        <span className="grid-item">{user?.bio?.bio}</span>
+        <hr className="grid-border" />
+        <span className="grid-item">
+          <ProfileEditBio user={user} />
+        </span>
+      </div>
     </Paper>
   );
 };

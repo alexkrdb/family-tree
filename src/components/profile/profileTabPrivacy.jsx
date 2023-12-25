@@ -35,65 +35,39 @@ const ProfileTabPrivacy = () => {
     updateOne({ privacySettings: checked }, "users", currentUser.uid);
     console.log("Saved privacy settings:", checked);
   };
-
-  const tableCellStyle = {
-    fontWeight: "bold",
-    minWidth: "60px",
-    padding: "10px",
-  };
-
-  const dataCellStyle = {
-    textAlign: "left",
-    padding: "10px",
-  };
   return (
-    <TableContainer component={Paper} sx={{padding: "1rem", display: "flex", flexDirection: "column", alignItems: "center"}}className="tableContainer">
-      <Table
-        sx={{ minWidth: 150, maxWidth: 360 }}
-        aria-label="privacy settings table"
-      >
-        <TableHead>
-          <TableRow>
-            <TableCell sx={tableCellStyle} align="center" colSpan={2}>
-              <Typography variant="h5" gutterBottom>
-                Prywatność
-              </Typography>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <TableRow>
-            <TableCell component="th" scope="row" sx={tableCellStyle}>
-              Czy pokazywać Bio?
-            </TableCell>
-            <TableCell align="right" sx={dataCellStyle}>
-              <Checkbox
-                edge="end"
-                checked={checked.indexOf("bio") !== -1}
-                onChange={handleToggle("bio")}
-                inputProps={{ "aria-labelledby": "bio-checkbox" }}
-              />
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell component="th" scope="row" sx={tableCellStyle}>
-              Czy pokazywać Email?
-            </TableCell>
-            <TableCell align="right" sx={dataCellStyle}>
-              <Checkbox
-                edge="end"
-                checked={checked.indexOf("email") !== -1}
-                onChange={handleToggle("email")}
-                inputProps={{ "aria-labelledby": "email-checkbox" }}
-              />
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+    <Paper className="" sx={{ padding: "1rem", width: "100%" }}>
+      <Typography variant="h5" justifyContent={"center"}>
+        Prywatność
+      </Typography>
+      <div className="grid c3">
+        <span className="grid-item">Czy pokazywać Bio?</span>
+        <span className="grid-item">
+          <Checkbox
+            edge="end"
+            checked={checked.indexOf("bio") !== -1}
+            onChange={handleToggle("bio")}
+            inputProps={{ "aria-labelledby": "bio-checkbox" }}
+          />
+        </span>
+        <hr className="grid-border" />
+        <span className="grid-item">Czy pokazywać Email?</span>
+        <span className="grid-item">
+          <Checkbox
+            edge="end"
+            checked={checked.indexOf("email") !== -1}
+            onChange={handleToggle("email")}
+            inputProps={{ "aria-labelledby": "email-checkbox" }}
+          />
+        </span>
+        <hr className="grid-border" />
+        <span className="grid-item">
           <Button variant="contained" onClick={handleSave} sx={{ mt: 2 }}>
             Zapisz
           </Button>
-    </TableContainer>
+        </span>
+      </div>
+    </Paper>
   );
 };
 

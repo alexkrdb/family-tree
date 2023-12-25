@@ -2,144 +2,137 @@ import React, { useContext, useState } from "react";
 import { updateOne } from "../../hooks/useDB";
 import { getLocalUser, setLocalUser } from "../../hooks/useLocalUser";
 import { AuthContext } from "../../context/AuthContex";
+import { Button, TextField } from "@mui/material";
 import {
-  Typography,
-  Button,
-  Table,
-  TableContainer,
-  TableBody,
-  TableCell,
-  TableRow,
-  Paper,
-  TextField,
-} from "@mui/material";
-
-const tableCellStyle = {
-  fontWeight: "bold",
-  minWidth: "60px",
-  padding: "10px",
-};
-
-const dataCellStyle = {
-  textAlign: "left",
-  padding: "10px",
-};
-
-const buttonCellStyle = {
-  textAlign: "center",
-  mt: 2,
-};
-const ProfileEditBio = ({ bio, setIsEdit, ...other }) => {
-  const [editedData, setEditedData] = useState(bio);
+  Modal,
+  ModalContents,
+  ModalDismissButton,
+  ModalOpenButton,
+} from "../modal/newModal";
+import "./helper.scss";
+import { Timestamp } from "firebase/firestore";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+const ProfileEditBio = ({ user, ...props }) => {
   const { currentUser } = useContext(AuthContext);
-
-  const handleCancelChanges = () => {
-    setIsEdit(false);
-  };
-
-  const handleSaveChanges = () => {
-    updateOne({ bio: editedData }, "users", currentUser.uid);
+  console.log(user);
+  const [newBio, setNewBio] = useState({
+    fName: user.bio?.fName,
+    lName: user.bio?.lName,
+    dBirth: user.bio?.dBirth.toDate(),
+    location: user.bio?.location,
+    bio: user.bio?.bio,
+  });
+  const saveNewBio = () => {
+    updateOne(
+      { bio: { ...newBio, dBirth: Timestamp.fromDate(newBio.dBirth) } },
+      "users",
+      currentUser.uid
+    );
     const user = getLocalUser();
-    setLocalUser({ ...user, bio: editedData });
-    setIsEdit(false);
+    setLocalUser({ ...user, bio: newBio });
   };
 
   return (
-    <div {...other} className="tab" elevation={3} sx={{ padding: "1rem" }}>
-      <Typography variant="h5" gutterBottom>
-        Edycja danych
-      </Typography>
-      <TableContainer className="tableContainer">
-        <Table>
-          <TableBody>
-            <TableRow>
-              <TableCell component="th" scope="row" sx={tableCellStyle}>
-                Imie i Nazwisko
-              </TableCell>
-              <TableCell align="left" sx={dataCellStyle}>
-                <TextField
-                  label="Imie"
-                  defaultValue={editedData?.fName}
-                  onChange={(e) =>
-                    setEditedData({ ...editedData, fName: e.target.value })
-                  }
-                  sx={{mr: 2}}
-                />
-                <TextField
-                  label="Nazwisko"
-                  defaultValue={editedData?.lName}
-                  onChange={(e) =>
-                    setEditedData({ ...editedData, lName: e.target.value })
-                  }
-                  sx={{ml: 2}}
-                />
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell component="th" scope="row" sx={tableCellStyle}>
-                Data urodzenia
-              </TableCell>
-              <TableCell align="left" sx={dataCellStyle}>
-                <TextField
-                  type="date"
-                  fullWidth
-                  defaultValue={editedData?.dBirth
-                    ?.toDate()
-                    .toLocaleDateString()}
-                  onChange={(e) =>
-                    setEditedData({ ...editedData, dBirth: e.target.value })
-                  }
-                />
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell component="th" scope="row" sx={tableCellStyle}>
-                Miejscowość
-              </TableCell>
-              <TableCell align="left" sx={dataCellStyle}>
-                <TextField
-                  fullWidth
-                  defaultValue={editedData?.location}
-                  onChange={(e) =>
-                    setEditedData({ ...editedData, location: e.target.value })
-                  }
-                />
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell component="th" scope="row" sx={tableCellStyle}>
-                Biografia
-              </TableCell>
-              <TableCell align="left" sx={dataCellStyle}>
-                <TextField
-                  multiline
-                  fullWidth
-                  defaultValue={editedData?.bio}
-                  onChange={(e) =>
-                    setEditedData({ ...editedData, bio: e.target.value })
-                  }
-                />
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-        <Button
-          variant="outlined"
-          onClick={handleCancelChanges}
-          sx={{ mt: 2, mr: 2 }}
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Modal>
+        <ModalOpenButton>
+          <Button variant="contained">Edytuj</Button>
+        </ModalOpenButton>
+        <ModalContents
+          width="sm"
+          title="Zmiana danych biograficznych"
+          actions={
+            <div>
+              <ModalDismissButton>
+                <Button color="error">Cofnij</Button>
+              </ModalDismissButton>
+              <ModalDismissButton>
+                <Button onClick={saveNewBio}>Zapisz</Button>
+              </ModalDismissButton>
+            </div>
+          }
         >
-          Anuluj
-        </Button>
-
-        <Button
-          variant="contained"
-          onClick={handleSaveChanges}
-          sx={{ mt: 2, ml: 2 }}
-        >
-          Zapisz
-        </Button>
-      </TableContainer>
-    </div>
+          <div className="grid c2">
+            <span className="grid-item">Imie:</span>
+            <span className="grid-item">
+              <TextField
+                variant="standard"
+                fullWidth
+                value={newBio.fName}
+                onChange={(e) =>
+                  setNewBio((old) => ({
+                    ...old,
+                    fName: e.target.value,
+                  }))
+                }
+                label="Wprowadź nowe imie"
+              />
+            </span>
+            <span className="grid-item">Nazwisko:</span>
+            <span className="grid-item">
+              <TextField
+                variant="standard"
+                fullWidth
+                value={newBio.lName}
+                onChange={(e) =>
+                  setNewBio((old) => ({
+                    ...old,
+                    lName: e.target.value,
+                  }))
+                }
+                label="Wprowadź nowe nazwisko"
+              />
+            </span>
+            <span className="grid-item">Data urodzenia:</span>
+            <span className="grid-item">
+              <DatePicker
+                variant="standard"
+                fullWidth
+                value={dayjs(newBio.dBirth)}
+                onChange={(e) =>
+                  setNewBio((old) => ({
+                    ...old,
+                    dBirth: e.toDate(),
+                  }))
+                }
+              />
+            </span>
+            <span className="grid-item">Miejscowość:</span>
+            <span className="grid-item">
+              <TextField
+                variant="standard"
+                fullWidth
+                value={newBio.location}
+                onChange={(e) =>
+                  setNewBio((old) => ({
+                    ...old,
+                    location: e.target.value,
+                  }))
+                }
+                label="Wprowadź nową miejscowość"
+              />
+            </span>
+            <span className="grid-item">Biografia:</span>
+            <span className="grid-item">
+              <TextField
+                variant="standard"
+                fullWidth
+                value={newBio.bio}
+                onChange={(e) =>
+                  setNewBio((old) => ({
+                    ...old,
+                    bio: e.target.value,
+                  }))
+                }
+                label="Wprowadź nową biografią"
+              />
+            </span>
+          </div>
+        </ModalContents>
+      </Modal>
+    </LocalizationProvider>
   );
 };
 

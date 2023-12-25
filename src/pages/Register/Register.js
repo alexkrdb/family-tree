@@ -37,7 +37,9 @@ export default function Register() {
       email: user.email,
       photoUrl: user.photoURL,
       createdAt: serverTimestamp(),
-      chats: []
+      chats: [],
+      family: [],
+      privacySettings: []
     };
 
     if (fName || lName || dBirth || location || bio) {

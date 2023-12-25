@@ -1,0 +1,26 @@
+.grid {
+  display: grid;
+  height: max-content;
+  &.c3 {
+    grid-template-columns: auto auto auto;
+  }
+
+  &.c2 {
+    grid-template-columns: auto auto;
+  }
+
+  .grid-item {
+    display: flex;
+    padding: 1rem;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .grid-border {
+    grid-column: 1 / span 3;
+    width: 80%;
+    height: 0px;
+    border: none;
+    border-bottom: 1px solid #ccc;
+  }
+}
