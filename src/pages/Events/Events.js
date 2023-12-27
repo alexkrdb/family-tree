@@ -11,9 +11,9 @@ function Events() {
   return (
     <div className="eventsPage">
       <div className="pageContent">
-        <Typography variant="h1">Events</Typography>
+        <Typography variant="h2">Wspomnienia</Typography>
         {events.map((item) => {
-          return <Event data={item} key={item.id} setEvents={setEvents}/>;
+          return <Event data={item} key={item?.comments?.length} setEvents={setEvents}/>;
         })}
         <AddEventModal setEvents={setEvents}/>
       </div>

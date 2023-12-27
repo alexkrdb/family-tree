@@ -1,7 +1,18 @@
-import { Button, Checkbox, List, ListItem, ListItemText } from "@mui/material";
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { updateOne } from "../../hooks/useDB";
 import { AuthContext } from "../../context/AuthContex";
+import {
+  Button,
+  Checkbox,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
 
 const ProfileTabPrivacy = () => {
   const [checked, setChecked] = useState([]);
@@ -19,38 +30,44 @@ const ProfileTabPrivacy = () => {
 
     setChecked(newChecked);
   };
+
   const handleSave = () => {
     updateOne({ privacySettings: checked }, "users", currentUser.uid);
     console.log("Saved privacy settings:", checked);
   };
-
   return (
-    <div>
-      <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
-        <ListItem>
-          <ListItemText primary="Czy pokazywać Bio?" />
+    <Paper className="" sx={{ padding: "1rem", width: "100%" }}>
+      <Typography variant="h5" justifyContent={"center"}>
+        Prywatność
+      </Typography>
+      <div className="grid c3">
+        <span className="grid-item">Czy pokazywać Bio?</span>
+        <span className="grid-item">
           <Checkbox
             edge="end"
             checked={checked.indexOf("bio") !== -1}
             onChange={handleToggle("bio")}
             inputProps={{ "aria-labelledby": "bio-checkbox" }}
           />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary="Czy pokazywać Email?" />
+        </span>
+        <hr className="grid-border" />
+        <span className="grid-item">Czy pokazywać Email?</span>
+        <span className="grid-item">
           <Checkbox
             edge="end"
             checked={checked.indexOf("email") !== -1}
             onChange={handleToggle("email")}
             inputProps={{ "aria-labelledby": "email-checkbox" }}
           />
-        </ListItem>
-
-      </List>
-      <Button variant="contained" onClick={handleSave}>
-        Zapisz
-      </Button>
-    </div>
+        </span>
+        <hr className="grid-border" />
+        <span className="grid-item">
+          <Button variant="contained" onClick={handleSave} sx={{ mt: 2 }}>
+            Zapisz
+          </Button>
+        </span>
+      </div>
+    </Paper>
   );
 };
 

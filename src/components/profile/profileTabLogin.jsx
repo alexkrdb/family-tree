@@ -1,68 +1,27 @@
-import React, { useState } from "react";
-import {
-  Typography,
-  Button,
-  Table,
-  TableContainer,
-  TableBody,
-  TableCell,
-  TableRow,
-  Paper,
-} from "@mui/material";
-import ProfileEditLogin from "../../components/profile/profileEditLogin";
+import { Typography, Paper } from "@mui/material";
+import { EditEmail, EditPassword } from "../../components/profile/profileEditLogin";
+import "./helper.scss";
 
-const hidden = (bool) => {
-  if (bool) return { display: "none" };
-};
-
-const ProfileTabLogin = (props) => {
-  console.log(props);
-  const user = props.user;
-  const [isEdit, setIsEdit] = useState(false);
-  const tableCellStyle = {
-    fontWeight: "bold",
-    minWidth: "60px",
-  };
-
-  const dataCellStyle = {
-    textAlign: "left",
-  };
-  const updateData = () => {
-    setIsEdit(true);
-  };
-
+const ProfileTabLogin = ({ user, ...props }) => {
   return (
-    <div>
-      <ProfileEditLogin
-        user={user}
-        setIsEdit={setIsEdit}
-        style={hidden(!isEdit)}
-      />
-      <TableContainer component={Paper} style={hidden(isEdit)}>
-        <Typography variant="h6">My login data</Typography>
-        <Table sx={{ minWidth: 250, maxWidth: 900 }} aria-label="simple table">
-          <TableBody>
-            <TableRow>
-              <TableCell component="th" scope="row" sx={tableCellStyle}>
-                Email:
-              </TableCell>
-              <TableCell align="left" sx={dataCellStyle}>
-                {user?.email}
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell component="th" scope="row" sx={tableCellStyle}>
-                Hasło:
-              </TableCell>
-              <TableCell align="left" sx={dataCellStyle}>
-                ***********
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-        <Button onClick={updateData}>Edytuj</Button>
-      </TableContainer>
-    </div>
+    <Paper className="" sx={{ padding: "1rem", width: "100%" }}>
+      <Typography variant="h5" justifyContent={"center"}>
+        Dane logowania
+      </Typography>
+      <div className="grid c3">
+        <span className="grid-item">Email:</span>
+        <span className="grid-item">{user?.email}</span>
+        <span className="grid-item">
+          <EditEmail/>
+        </span>
+        <hr className="grid-border" />
+        <span className="grid-item">Hasło:</span>
+        <span className="grid-item">******</span>
+        <span className="grid-item">
+          <EditPassword />
+        </span>
+      </div>
+    </Paper>
   );
 };
 

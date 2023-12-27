@@ -19,29 +19,26 @@ const Profile = () => {
   console.log(userId);
   useEffect(() => {
     const fetchData = async () => {
-      console.log("Fetching data from the database");
       const userDoc = await readOne("users", userId);
       setUser(userDoc);
     };
 
     currentUser && fetchData();
   }, [currentUser, userId]);
+  
   const addFamilyMember = () => {
     const updatedData = { family: [userId] };
     updateOne(updatedData, "users", currentUser.uid);
   };
-  console.log("user?.family:", user?.family);
-  console.log("userId:", userId);
+  // console.log("user?.family:", user?.family);
+  // console.log("userId:", userId);
   return (
     <div className="Profile">
+      <Header user={user} currentUser={currentUser} />
       {userId === currentUser?.uid ? (
-        <>
-          <Header user={user} currentUser={currentUser} />
           <ProfileTab user={user} currentUser={currentUser} />
-        </>
       ) : (
         <>
-          <Header user={user} currentUser={currentUser} />
           <ProfileTabBio
             user={user}
             logged={userId !== currentUser?.uid}

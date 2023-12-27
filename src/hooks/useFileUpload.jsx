@@ -21,6 +21,7 @@ const UseFileUpload = (fileUrl = "images", typePrefix = "IMG_") => {
 
     return Promise.all(promises)
   };
+
   return [files, setFiles, uploadFiles];
 };
 
