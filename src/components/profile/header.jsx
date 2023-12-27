@@ -6,8 +6,6 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Input,
-  TextField,
   Typography,
 } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
@@ -59,12 +57,11 @@ const Header = ({user, currentUser}) => {
               onClick={handleClickOpen}
             ></Button>
           </label>
-
           <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Change avatar</DialogTitle>
+            <DialogTitle>Zmień zdjęcie</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                Add a new avatar image from your files
+                Dodaj zdjęcie z plików
               </DialogContentText>
               <Button
                 component="label"

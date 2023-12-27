@@ -55,8 +55,6 @@ function Chats() {
     currentUser && getChats();
   }, [currentUser]);
 
-
-  // console.log(data);
   return (
     <div className="chatPage">
       <div className="content">
@@ -73,7 +71,6 @@ function Chats() {
                 </Avatar>
               </ListItemAvatar>
               <ListItemText primary={chat.name}/>
-              
             </ListItem>
           ))}
           <CreateChatModal
@@ -112,7 +109,7 @@ const CreateChatModal = ({ currentUser, chatsLength, userFamily }) => {
             <div>
               <ModalDismissButton>
                 <Button variant="text" color="error">
-                  Cancel
+                  Cofnij
                 </Button>
               </ModalDismissButton>
               <SaveNewChatButton />

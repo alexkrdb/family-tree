@@ -1,7 +1,4 @@
 import {
-  Button,
-  ImageListItem,
-  ImageList,
   Paper,
   Typography,
   Avatar,
@@ -10,7 +7,6 @@ import {
   Menu,
   MenuItem,
   IconButton,
-  TextField,
 } from "@mui/material";
 import CommentIcon from "@mui/icons-material/Comment";
 import MModal from "../modal/MModal";
@@ -25,24 +21,15 @@ import NewComment from "./newComment";
 import { deleteOne } from "../../hooks/useDB";
 import { AuthContext } from "../../context/AuthContex";
 import Gallery from "../gallery/Gallery";
+import { MMenu, MMenuOpenButton, MenuContent } from "../menu/MMenu";
+
 const Event = ({ data, setEvents, ...other }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const {currentUser} = useContext(AuthContext)
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
+  const { currentUser } = useContext(AuthContext);
   const handleDelete = () => {
     if (window.confirm("Czy chcesz usunąć post?")) {
       deleteOne("posts", data.id);
       setEvents((x) => x.filter((event) => event.id !== data.id));
     }
-    handleClose();
   };
 
   return (
@@ -64,27 +51,24 @@ const Event = ({ data, setEvents, ...other }) => {
             </Typography>
           </div>
         </div>
-        <IconButton onClick={handleClick}>
-          <MoreVertIcon />
-        </IconButton>
-        <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-          {currentUser.uid === data.userId && (
-            <MenuItem onClick={handleDelete} key={data.id}>
-              Delete
-            </MenuItem>
-          )}
-          <MenuItem>Share</MenuItem>
-        </Menu>
+        <MMenu>
+          <MMenuOpenButton>
+            <IconButton>
+              <MoreVertIcon />
+            </IconButton>
+          </MMenuOpenButton>
+          <MenuContent>
+            {currentUser.uid === data.userId && <span onClick={handleDelete}>Usuń</span>}
+            <span>Udostępnij</span>
+          </MenuContent>
+        </MMenu>
       </div>
       <hr />
-      
       <div className="eventContent">
         <Typography variant="body1">{data?.text}</Typography>
         <Gallery images={data?.images} />
       </div>
-
       <hr />
-
       <div className="footer">
         <FormControlLabel
           value="like"
@@ -97,22 +81,20 @@ const Event = ({ data, setEvents, ...other }) => {
           }
           label={
             <Typography color="error" variant="button">
-              Like
+              Lubię to
             </Typography>
           }
           labelPlacement="right"
         />
-        <MModal buttonText="Comments" startIcon={<CommentIcon />}>
+        <MModal buttonText="Komentuj" startIcon={<CommentIcon />}>
           <div>
-            <Typography variant="h3">Comments</Typography>
+            <Typography variant="h3">Komentuj</Typography>
             <div
               style={{ height: "50vh", overflowY: "scroll", margin: "1rem 0" }}
             >
               {data?.comments?.map((comment) => {
-                // console.log(comment);
                 return <Comment comment={comment} />;
               })}
-              {/* Comment input box */}
             </div>
             <NewComment postId={data.id} />
           </div>

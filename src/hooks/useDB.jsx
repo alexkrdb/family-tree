@@ -1,4 +1,3 @@
-
 import {
   collection,
   deleteDoc,
@@ -10,6 +9,7 @@ import {
   setDoc,
   updateDoc,
   where,
+  writeBatch,
 } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { ShortInfoConverter } from "../components/users/ShortUserInfo";
@@ -56,6 +56,14 @@ const deleteOne = async (...path) => {
     .then(() => console.log("deleted at ", ...path))
     .catch((error) => console.error(error.message));
 };
+
+export const batch = () => {
+  return writeBatch(db);
+}
+
+export const reference = (...path) => {
+  return doc(db, ...path)
+} 
 
 
 export const getUserShortInfoByIds = async (ids) => {

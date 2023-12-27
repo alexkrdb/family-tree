@@ -2,7 +2,6 @@ import "./mmodal.scss";
 import { Fragment, useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { IconButton } from "@mui/material";
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
@@ -31,12 +30,10 @@ const MModal = (props) => {
       <Modal
         open={open}
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
         sx={{overflowY: "hidden"}}
       >
         <Box className="mmodal" sx={{ boxShadow: 24, height: "max-content" }}>
-          <IconButton
+          <IconButton 
             sx={{
               position: "absolute",
               top: "5%",

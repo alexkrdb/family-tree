@@ -3,10 +3,12 @@ import { ImageList, ImageListItem } from "@mui/material";
 import "./gallery.scss";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { createPortal } from "react-dom";
 
 const Gallery = ({ images }) => {
+  images = images.filter((image) => image !== "")
   const [lightboxImage, setLightboxImage] = useState(null);
-
+  const currentIndex = images.indexOf(lightboxImage);
   const openLightbox = (image) => {
     setLightboxImage(image);
   };
@@ -17,7 +19,6 @@ const Gallery = ({ images }) => {
 
   const goToPrev = (event) => {
     event.stopPropagation();
-    const currentIndex = images.indexOf(lightboxImage);
     if (currentIndex > 0) {
       setLightboxImage(images[currentIndex - 1]);
     }
@@ -25,12 +26,10 @@ const Gallery = ({ images }) => {
 
   const goToNext = (event) => {
     event.stopPropagation();
-    const currentIndex = images.indexOf(lightboxImage);
     if (currentIndex < images.length - 1) {
       setLightboxImage(images[currentIndex + 1]);
     }
   };
-
   return (
     <div className="gallery">
       <ImageList className="image-list" cols={2}>
@@ -39,18 +38,18 @@ const Gallery = ({ images }) => {
             <img
               className="image-card"
               src={image}
-              alt={`${index}`}
+              // alt={`${index}`}
               onClick={() => openLightbox(image)}
             />
           </ImageListItem>
         ))}
       </ImageList>
 
-      {lightboxImage && (
+      {lightboxImage && createPortal(
         <div className="lightbox-overlay" onClick={closeLightbox}>
           <div className="lightbox-container">
             <div className="arrow-icon" onClick={(e) => goToPrev(e)}>
-              <ArrowBackIosIcon sx={{ color: "white" }} />
+              {currentIndex > 0 && <ArrowBackIosIcon sx={{ color: "white" }} />}
             </div>
             <img
               className="lightbox-image"
@@ -58,10 +57,11 @@ const Gallery = ({ images }) => {
               alt="Lightbox"
             />
             <div className="arrow-icon" onClick={(e) => goToNext(e)}>
-              <ArrowForwardIosIcon sx={{ color: "white" }} />
+              {currentIndex < images.length-1 && <ArrowForwardIosIcon sx={{ color: "white" }} />}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
