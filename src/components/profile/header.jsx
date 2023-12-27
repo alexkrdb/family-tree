@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  IconButton,
   Input,
   TextField,
   Typography,
@@ -15,10 +16,10 @@ import UseFileUpload from "../../hooks/useFileUpload";
 import { updateOne } from "../../hooks/useDB";
 import { Fragment, useState } from "react";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
+import ImageInput from "../imageInput/ImageInput";
 
-const Header = ({user, currentUser}) => {
-  const [files, setFiles, uploadFiles] = UseFileUpload();
-  const [open, setOpen] = useState(false);
+const Header = ({ user, currentUser }) => {
+  const [, , uploadFiles] = UseFileUpload();
 
   const renderEmail = () => {
     if (user?.privacySettings?.includes("email")) {
@@ -26,18 +27,10 @@ const Header = ({user, currentUser}) => {
     }
     return null;
   };
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const updateAvatar = async () => {
-    const url = await uploadFiles();
+  const updateAvatar = async (event) => {
+    const url = await uploadFiles([event.target.files[0]]);
     updateOne({ photoUrl: url[0] }, "users", currentUser.uid);
-    setOpen(false);
   };
 
   return (
@@ -51,45 +44,11 @@ const Header = ({user, currentUser}) => {
         }}
       >
         <Avatar sx={{ width: 150, height: 150 }} src={user?.photoUrl} />
-        <Fragment>
-          <label htmlFor="avatar-input">
-            <Button
-              component="span"
-              startIcon={<CreateIcon />}
-              onClick={handleClickOpen}
-            ></Button>
-          </label>
+        <label htmlFor="avatar-input">
+          <CreateIcon />
+          <ImageInput id="avatar-input" onChange={updateAvatar} />
 
-          <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Change avatar</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                Add a new avatar image from your files
-              </DialogContentText>
-              <Button
-                component="label"
-                variant="outlined"
-                startIcon={<UploadFileIcon />}
-                sx={{ marginTop: "1rem" }}
-              >
-                Add file to your post
-                <input
-                  type="file"
-                  hidden
-                  accept="image/png, image/jpeg"
-                  onChange={(e) => {
-                    setFiles(Array.from(e.target.files));
-                  }}
-                />
-              </Button>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={updateAvatar}>Save</Button>
-              <Button onClick={handleClose}>Cancel</Button>
-            </DialogActions>
-          </Dialog>
-        </Fragment>
-
+        </label>
         <div className="user-info">
           <Typography variant="h4">
             {user?.bio?.fName} {user?.bio?.lName}

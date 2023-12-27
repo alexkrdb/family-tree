@@ -55,8 +55,6 @@ function Chats() {
     currentUser && getChats();
   }, [currentUser]);
 
-
-  // console.log(data);
   return (
     <div className="chatPage">
       <div className="content">

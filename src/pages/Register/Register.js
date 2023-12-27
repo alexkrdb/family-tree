@@ -1,11 +1,10 @@
-import { useState } from 'react';
-import { auth } from '../../config/firebase';
+import React, { useState } from 'react';
+import { auth, db } from '../../config/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { Link, useNavigate } from 'react-router-dom';
-import { db } from '../../config/firebase';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { serverTimestamp, setDoc, doc } from 'firebase/firestore';
-import { Grid, IconButton, InputAdornment, Paper, Typography } from '@mui/material';
-import EmailIcon from '@mui/icons-material/Email';
+import { Grid, Paper, Typography, TextField, Button, Link, Container } from '@mui/material';
+import "../../index.scss";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -14,15 +13,23 @@ export default function Register() {
     fName: "",
     lName: "",
     dBirth: null,
-    country: "",
     location: "",
     bio: ""
+  });
+
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+    fName: "",
+    lName: "",
+    dBirth: "",
+    location: "",
   });
 
   const navigate = useNavigate();
 
   async function createUser(user) {
-    const { email, password, fName, lName, dBirth, country, location, bio } = formData;
+    const { email, password, fName, lName, dBirth, location, bio } = formData;
 
     const userDoc = {
       id: user.uid,
@@ -30,15 +37,16 @@ export default function Register() {
       email: user.email,
       photoUrl: user.photoURL,
       createdAt: serverTimestamp(),
-      chats: []
+      chats: [],
+      family: [],
+      privacySettings: []
     };
 
-    if (fName || lName || dBirth || country || location || bio) {
+    if (fName || lName || dBirth || location || bio) {
       userDoc.bio = {
         fName,
         lName,
         dBirth: dBirth ? new Date(dBirth) : null,
-        country,
         location,
         bio
       };
@@ -47,10 +55,44 @@ export default function Register() {
     await setDoc(doc(db, "users", user.uid), userDoc);
   }
 
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+    return regex.test(password);
+  };
+
+  const validateField = (name, value) => {
+    switch (name) {
+      case "email":
+        return validateEmail(value) ? "" : "Proszę wprowadzić poprawny adres email";
+      case "password":
+        return validatePassword(value) ? "" : "Hasło musi mieć co najmniej 6 znaków, w tym co najmniej jedną literę i jedną cyfrę";
+      default:
+        return "";
+    }
+  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
 
     const { email, password } = formData;
+
+    const emailError = validateField("email", email);
+    const passwordError = validateField("password", password);
+
+    setErrors({
+      ...errors,
+      email: emailError,
+      password: passwordError,
+    });
+
+    if (emailError || passwordError) {
+      return;
+    }
 
     await createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
@@ -68,34 +110,125 @@ export default function Register() {
 
   const handleInput = (e) => {
     const { name, value } = e.target;
+    const fieldError = validateField(name, value);
+
     setFormData({
       ...formData,
       [name]: value
     });
+
+    setErrors({
+      ...errors,
+      [name]: fieldError,
+    });
   };
 
   return (
-    <div className='form content'>
-
-      <Paper elevation="24" sx={{ padding: "3rem" }}>
-        <Typography variant="h4">Rejestracja</Typography>
-        <form onSubmit={onSubmit}>
+    <Container className="loginRegister" component="main" maxWidth="xs">
+      <Paper className="content" elevation={24}>
+        <Typography variant="h4" gutterBottom>
+          Rejestracja
+        </Typography>
+        <form onSubmit={onSubmit} style={{ width: "100%" }} className="form">
           <Grid container spacing={2}>
-            <Grid item xs={12}><input type='text' name="email" placeholder='Email' required onChange={handleInput} /></Grid>
-            <Grid item xs={12}><input type='password' name="password" placeholder='Password' required onChange={handleInput} /></Grid>
-            <Grid item xs={6}><input type='text' name="fName" placeholder='First Name' onChange={handleInput} /></Grid>
-            <Grid item xs={6}><input type='text' name="lName" placeholder='Surname' onChange={handleInput} /></Grid>
-            <Grid item xs={12}><input type='date' name="dBirth" placeholder='date of birth' onChange={handleInput} /></Grid>
-            <Grid item xs={6}> <input type='text' name="country" placeholder='Country' onChange={handleInput} /></Grid>
-            <Grid item xs={6}><input type='text' name="location" placeholder='Location' onChange={handleInput} /></Grid>
-            <Grid item xs={12}><input fullWidth multiline rows={4} type='text' name="bio" placeholder='Bio' onChange={handleInput} /></Grid>
-            <Grid item xs={12}><button type="submit">Submit</button></Grid>
-            <Grid item xs={12}><Link to="/login">Masz konto? Zarejestruj się</Link></Grid>
+            <Grid item xs={12}>
+              <TextField
+                type="text"
+                label="Adres email"
+                name="email"
+                variant="outlined"
+                fullWidth
+                required
+                onChange={handleInput}
+                error={!!errors.email}
+                helperText={errors.email}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                type="password"
+                label="Hasło"
+                name="password"
+                variant="outlined"
+                fullWidth
+                required
+                onChange={handleInput}
+                error={!!errors.password}
+                helperText={errors.password}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                type="text"
+                label="Imię"
+                name="fName"
+                variant="outlined"
+                required
+                fullWidth
+                onChange={handleInput}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                type="text"
+                label="Nazwisko"
+                name="lName"
+                variant="outlined"
+                fullWidth
+                required
+                onChange={handleInput}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                type="date"
+                name="dBirth"
+                variant="outlined"
+                fullWidth
+                required
+                onChange={handleInput}
+                error={!!errors.dBirth}
+                helperText={errors.dBirth}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                type="text"
+                label="Miejscowość"
+                name="location"
+                variant="outlined"
+                fullWidth
+                onChange={handleInput}
+                error={!!errors.location}
+                helperText={errors.location}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                multiline
+                rows={4}
+                type="text"
+                label="Biografia"
+                name="bio"
+                variant="outlined"
+                maxRows={5}
+                onChange={handleInput}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+                Zarejestruj się
+              </Button>
+            </Grid>
+            <Grid item xs={12}>
+              <Link component={RouterLink} to="/login" variant="body2">
+                Masz konto? Zaloguj się
+              </Link>
+            </Grid>
           </Grid>
-          
-          
         </form>
       </Paper>
-    </div>
+    </Container >
   );
 }
