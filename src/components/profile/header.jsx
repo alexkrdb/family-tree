@@ -6,9 +6,6 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  IconButton,
-  Input,
-  TextField,
   Typography,
 } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
@@ -47,7 +44,6 @@ const Header = ({ user, currentUser }) => {
         <label htmlFor="avatar-input">
           <CreateIcon />
           <ImageInput id="avatar-input" onChange={updateAvatar} />
-
         </label>
         <div className="user-info">
           <Typography variant="h4">

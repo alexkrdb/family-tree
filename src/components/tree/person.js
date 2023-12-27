@@ -23,7 +23,6 @@ class Person {
     this.dDeath = dDeath ? new Date(dDeath) : null;
     this.bio = bio;
     this.sex = sex;
-    this.lName = lName;
     this.photoUrls = photoUrls || [photoUrl || null];
     this.position = position;
   }

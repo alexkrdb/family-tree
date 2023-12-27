@@ -7,13 +7,6 @@ import Person from "./person";
 
 var person = null;
 
-const savePerson = () => {
-  console.log("person: ", person);
-  // person.position.x +=
-  person.savePerson();
-  person = null;
-};
-
 const PersonForm = ({ id, defaultData }) => {
   const [isDisabled, setDisabled] = useState(true);
   if (person === null) person = new Person({ ...defaultData, id });
@@ -106,4 +99,4 @@ const PersonForm = ({ id, defaultData }) => {
 
 export default memo(PersonForm);
 
-export { savePerson };
+// export { savePerson };

@@ -71,7 +71,7 @@ function ModalContents({ title, actions, children, ...props }) {
         <DialogTitle>{title}</DialogTitle>
         <DialogContent
           dividers
-          sx={{ display: "flex", gap: "1rem", height: "60vh" }}
+          sx={{ display: "flex", gap: "1rem", height: "60vh", padding: "8px 12px" }}
         >
           {children}
         </DialogContent>

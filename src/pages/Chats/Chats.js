@@ -71,7 +71,6 @@ function Chats() {
                 </Avatar>
               </ListItemAvatar>
               <ListItemText primary={chat.name}/>
-              
             </ListItem>
           ))}
           <CreateChatModal
@@ -110,7 +109,7 @@ const CreateChatModal = ({ currentUser, chatsLength, userFamily }) => {
             <div>
               <ModalDismissButton>
                 <Button variant="text" color="error">
-                  Cancel
+                  Cofnij
                 </Button>
               </ModalDismissButton>
               <SaveNewChatButton />

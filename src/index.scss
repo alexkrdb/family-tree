@@ -9,8 +9,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
 
+
   #root {
     height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
 
   .chatPage {
@@ -151,7 +154,7 @@ body {
   }
 
   .treePage {
-    height: calc(100vh - 54.4px);
+    height: calc(100vh - 61.8px);
 
     .pageContent {
       height: 100%;
@@ -166,13 +169,21 @@ body {
         border-radius: 5px;
         background: #eeeeee;
 
-        img {
+        .photo {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: #888;
           width: 100px;
           height: 150px;
-          object-fit: cover;
-          border-radius: 5px;
-        }
 
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 5px;
+          }
+        }
         .btnGroup {
           display: flex;
           flex-direction: column;

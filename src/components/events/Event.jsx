@@ -21,31 +21,24 @@ import NewComment from "./newComment";
 import { deleteOne, updateOne } from "../../hooks/useDB";
 import { AuthContext } from "../../context/AuthContex";
 import Gallery from "../gallery/Gallery";
+import { MMenu, MMenuOpenButton, MenuContent } from "../menu/MMenu";
 import { arrayRemove, arrayUnion } from "firebase/firestore";
 
 const Event = ({ data, setEvents, ...other }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+ 
   const { currentUser } = useContext(AuthContext);
   const [liked, setLiked] = useState({
     likes: data.likes.length,
     liked: data.likes.includes(currentUser.uid),
   });
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
+const Event = ({ data, setEvents, ...other }) => {
+  const { currentUser } = useContext(AuthContext);
   const handleDelete = () => {
     if (window.confirm("Czy chcesz usunąć post?")) {
       deleteOne("posts", data.id);
       setEvents((x) => x.filter((event) => event.id !== data.id));
     }
-    handleClose();
   };
 
   const handleLike = () => {
@@ -77,16 +70,17 @@ const Event = ({ data, setEvents, ...other }) => {
             </Typography>
           </div>
         </div>
-        <IconButton onClick={handleClick}>
-          <MoreVertIcon />
-        </IconButton>
-        <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-          {currentUser.uid === data.userId && (
-            <MenuItem onClick={handleDelete} key={data.id}>
-              Usuń
-            </MenuItem>
-          )}
-        </Menu>
+        <MMenu>
+          <MMenuOpenButton>
+            <IconButton>
+              <MoreVertIcon />
+            </IconButton>
+          </MMenuOpenButton>
+          <MenuContent>
+            {currentUser.uid === data.userId && <span onClick={handleDelete}>Usuń</span>}
+            <span>Udostępnij</span>
+          </MenuContent>
+        </MMenu>
       </div>
       <hr />
 
@@ -94,9 +88,7 @@ const Event = ({ data, setEvents, ...other }) => {
         <Typography variant="body1">{data?.text}</Typography>
         <Gallery images={data?.images} />
       </div>
-
       <hr />
-
       <div className="footer">
         <FormControlLabel
           value="like"
@@ -119,7 +111,6 @@ const Event = ({ data, setEvents, ...other }) => {
           }
           labelPlacement="right"
         />
-
         <MModal buttonText="Komentarze" startIcon={<CommentIcon />}>
           <div>
             <Typography variant="h3">Komentarze</Typography>

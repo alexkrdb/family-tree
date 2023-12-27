@@ -1,33 +1,44 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { AuthContext } from "../context/AuthContex";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../config/firebase";
 import { useEdgesState } from "reactflow";
-import { readMany } from "./useDB";
+import { batch, readMany, reference } from "./useDB";
 
 export const useRelations = () => {
-    const [edges, setEdges, onEdgesChange]= useEdgesState([]);
-    const {currentUser} = useContext(AuthContext);
-    
-    const fetchRelations = async() => {
-        console.log("Edges: fetching data from database");
-        const data= await readMany([],"trees", currentUser.uid, "relations")
-        data.map(el => {
-            el.type = "step";
-            return el;
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const { currentUser } = useContext(AuthContext);
+  const ref = useRef();
+  ref.current = edges;
+
+  const fetchRelations = async () => {
+    const data = await readMany([], "trees", currentUser.uid, "relations");
+    data.map((el) => {
+      el.type = "smoothstep";
+      return el;
+    });
+    setEdges(data);
+  };
+
+  const saveRelations = () => {
+    const relations = batch();
+    ref.current.forEach((edge) => {
+      if (edge.changed) {
+        const dbref = reference("trees", currentUser.uid, "relations", edge.id);
+        relations.set(dbref, {
+          id: edge.id,
+          source: edge.source,
+          target: edge.target,
         });
-        console.log("procesed",data );
-        setEdges(data);
+      }
+    });
+    relations.commit();
+  };
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchRelations();
+      return saveRelations;
     }
+  }, [currentUser]);
 
-    const saveRelations = () => {
-        currentUser&& console.log("there should be saving to localStorage/database")
-    }
-
-    useEffect(()=>{
-        currentUser && fetchRelations();
-        return saveRelations;
-    }, [currentUser])
-
-    return [edges, setEdges, onEdgesChange];
-}
+  return [edges, setEdges, onEdgesChange];
+};

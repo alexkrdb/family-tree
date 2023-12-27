@@ -138,7 +138,7 @@ export const SaveNewChatButton = () => {
   return (
     <ModalDismissButton>
       <Button variant="button" color="success" onClick={save}>
-        Save
+        Zapisz
       </Button>
     </ModalDismissButton>
   );
