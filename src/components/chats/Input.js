@@ -5,12 +5,12 @@ import { Timestamp } from "firebase/firestore";
 import SendIcon from "@mui/icons-material/Send";
 import { saveOne } from "../../hooks/useDB";
 import { v1 } from "uuid";
-import { ButtonGroup, TextField, IconButton } from "@mui/material";
+import { ButtonGroup, TextField, IconButton, Badge } from "@mui/material";
 import ImageIcon from "@mui/icons-material/Image";
 import ImageInput from "../imageInput/ImageInput";
-import UseFileUpload from "../../hooks/useFileUpload"
+import UseFileUpload from "../../hooks/useFileUpload";
 export const Input = memo(({ setChatState }) => {
-  const [message, setMessage] = useState({message: "", files: []});
+  const [message, setMessage] = useState({ message: "", files: [] });
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
   const [, , uploadFiles] = UseFileUpload(`/chats/${data.chatId}`);
@@ -18,7 +18,7 @@ export const Input = memo(({ setChatState }) => {
     e.preventDefault();
     if (message.message || message.files.length != 0) {
       const id = v1();
-      const photoUrls = await uploadFiles(message.files)
+      const photoUrls = await uploadFiles(message.files);
       const obj = {
         id: id,
         message: message.message,
@@ -27,10 +27,10 @@ export const Input = memo(({ setChatState }) => {
         user: currentUser.uid,
       };
       await saveOne(obj, "chats", data.chatId, "messages", id);
-      setMessage({message: "", files: []});
+      setMessage({ message: "", files: [] });
       setChatState((oldState) => ({
         ...oldState,
-        messages: [...oldState.messages, obj],
+        messages: [obj, ...oldState.messages],
       }));
     }
   };
@@ -39,21 +39,34 @@ export const Input = memo(({ setChatState }) => {
     <form className="input">
       <TextField
         placeholder="Wpisz cos"
-        onChange={(e) => setMessage((old)=> ({...old, message: e.target.value}))}
+        onChange={(e) =>
+          setMessage((old) => ({ ...old, message: e.target.value }))
+        }
         value={message.message}
         variant="standard"
         fullWidth
         autoComplete="off"
       />
-      <ButtonGroup sx={{alignItems: "baseline"}}>
+      <ButtonGroup sx={{ alignItems: "center"}}>
         <IconButton>
           <label htmlFor="imageInput">
-            <ImageIcon />
+            <Badge
+              badgeContent={message.files.length}
+              color="primary"
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+            >
+              <ImageIcon />
+            </Badge>
           </label>
           <ImageInput
-          id="imageInput"
-          multiple={true}
-          onChange={(e)=>setMessage((old) => ({...old, files: e.target.files}))}
+            id="imageInput"
+            multiple={true}
+            onChange={(e) =>
+              setMessage((old) => ({ ...old, files: e.target.files }))
+            }
           />
         </IconButton>
         <IconButton type="submit" onClick={handleSubmit}>

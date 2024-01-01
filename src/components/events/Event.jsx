@@ -31,9 +31,6 @@ const Event = ({ data, setEvents, ...other }) => {
     likes: data.likes.length,
     liked: data.likes.includes(currentUser.uid),
   });
-
-const Event = ({ data, setEvents, ...other }) => {
-  const { currentUser } = useContext(AuthContext);
   const handleDelete = () => {
     if (window.confirm("Czy chcesz usunąć post?")) {
       deleteOne("posts", data.id);

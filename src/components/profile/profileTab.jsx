@@ -1,4 +1,4 @@
-import { Button, Tab, Tabs, Typography } from "@mui/material";
+import { Button, Paper, Tab, Tabs, Typography } from "@mui/material";
 import ProfileTabLogin from "./profileTabLogin";
 import ProfileTabBio from "./profileTabBio";
 
@@ -7,9 +7,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
 import ProfileTabPrivacy from "./profileTabPrivacy";
 
-const ProfileTab = (props) => {
-  const user = props.user;
-  const currentUser = props.currentUser;
+const ProfileTab = ({user, currentUser, ...props}) => {
   const [selectedTab, setSelectedTab] = useState(0);
   const handleDeleteProfile = async () => {
     if (
@@ -62,9 +60,9 @@ const ProfileTab = (props) => {
         <div className="login-data" style={hidden(0)}>
           <ProfileTabLogin user={user} />
         </div>
-        <div className="bio" style={hidden(1)}>
-          <ProfileTabBio user={user} key={user.email} />
-        </div>
+        <Paper className="bio" style={hidden(1)}>
+          <ProfileTabBio user={user} currentUser={currentUser} key={user.email} />
+        </Paper>
 
         <div className="privacy" style={hidden(2)}>
           <ProfileTabPrivacy user={user}/>

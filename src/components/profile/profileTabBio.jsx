@@ -1,9 +1,9 @@
-import { Typography, Button, Paper } from "@mui/material";
+import { Typography, Paper } from "@mui/material";
 import ProfileEditBio from "../../components/profile/profileEditBio";
-import "./helper.scss"
-const ProfileTabBio = ({ user, ...props }) => {
+import "./helper.scss";
+const ProfileTabBio = ({ user, currentUser }) => {
   return (
-    <Paper className="" sx={{ padding: "1rem", width: "100%" }}>
+    <div className="" sx={{ padding: "1rem" }}>
       <Typography variant="h5" justifyContent={"center"}>
         Dane biograficzne
       </Typography>
@@ -21,14 +21,17 @@ const ProfileTabBio = ({ user, ...props }) => {
         <span className="grid-item">Miejscowośc:</span>
         <span className="grid-item">{user?.bio?.location}</span>
         <hr className="grid-border" />
+
         <span className="grid-item">Biografia:</span>
         <span className="grid-item">{user?.bio?.bio}</span>
         <hr className="grid-border" />
-        <span className="grid-item">
-          <ProfileEditBio user={user} />
-        </span>
+        {currentUser.uid === user.id && (
+          <span className="grid-item">
+            <ProfileEditBio user={user} />
+          </span>
+        )}
       </div>
-    </Paper>
+    </div>
   );
 };
 

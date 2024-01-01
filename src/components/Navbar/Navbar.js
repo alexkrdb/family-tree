@@ -51,7 +51,7 @@ export const Navbar = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <Link to={`/search?searchQuery=${encodeURIComponent(searchQuery)}`}>
+            <Link to={`/search?searchQuery=${encodeURIComponent(searchQuery)}`} onClick={() => setSearchQuery("")}>
               <SearchIcon />
             </Link>
           </div>

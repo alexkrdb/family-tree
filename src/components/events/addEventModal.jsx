@@ -34,7 +34,7 @@ const AddEventModal = (props) => {
       const user = getLocalUser();
 
       if (user) {
-        if (postText.trim() === "") {
+        if (postText.trim() === "" && files.length === 0) {
           setIsTextEmpty(true);
           return;
         }

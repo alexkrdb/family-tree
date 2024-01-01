@@ -5,20 +5,18 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Paper, Typography, TextField, Button, Link, Container } from '@mui/material';
 import "../../index.scss";
 
-export default function Login() {
+export default function Login({defLocation="/"}) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
-
     const onSubmit = async (e) => {
         e.preventDefault();
-
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
             console.log("User authenticated with:", user.uid);
-            navigate('/');
+            navigate(defLocation);
         } catch (error) {
             setError('Nieudane logowanie. Sprawdź poprawność adresu email i hasła.');
             console.error(error.code, error.message);

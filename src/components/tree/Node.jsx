@@ -159,14 +159,12 @@ function Node({ data }) {
         </ModalContents>
         <div className="btnGroup">
           <CreatePersonDialog
-            currentNode={data.id}
             title="Dodanie Rodzica"
             color="success"
             buttonText="Dodaj rodzica"
             onSave={(person) => onSaveNewPerson(person, "parent")}
           />
           <CreatePersonDialog
-            currentNode={data.id}
             title="Dodanie Dziecka"
             buttonText="Dodaj dziecko"
             onSave={(person) => onSaveNewPerson(person, "child")}

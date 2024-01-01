@@ -22,26 +22,27 @@ import { Fragment, useContext, useState } from "react";
 import ImageInput from "../imageInput/ImageInput";
 import { TreeContext } from "../../context/TreeContext";
 import NodeSearchList from "./NodeSearchList";
+import dayjs from "dayjs";
 
 const CreatePersonDialog = ({
   title = "",
   buttonText = "Dodaj",
   onSave,
   color="primary",
-  currentNode,
+  defState ={},
   ...props
 }) => {
   const { nodes } = useContext(TreeContext);
   const [changes, setChanges] = useState({
-    nodeId: null,
-    fName: "",
-    lName: "",
-    dBirth: null,
-    dDeath: null,
-    photoUrls: "",
+    nodeId: defState.id || null,
+    fName: defState.fName || "",
+    lName: defState.lName || "",
+    dBirth: defState.dBirth || null,
+    dDeath: defState.dDeath || null,
+    photoUrls: defState.photoUrls || "",
     file: null,
-    sex: "male",
-    bio: "",
+    sex: defState.sex || "male",
+    bio: defState.bio || "",
   });
 
   return (
@@ -104,7 +105,7 @@ const CreatePersonDialog = ({
                 />
                 <DatePicker
                   label="Data urodzenia"
-                  defaultValue={null}
+                  defaultValue={defState.dBirth && dayjs(defState.dBirth)}
                   onChange={(e) =>
                     setChanges((old) => ({ ...old, dBirth: e.toDate() }))
                   }

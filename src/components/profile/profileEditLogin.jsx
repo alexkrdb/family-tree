@@ -19,7 +19,7 @@ import { updateOne } from "../../hooks/useDB";
 export const EditEmail = ({ ...props }) => {
   const { currentUser } = useContext(AuthContext);
   const [newEmail, setNewEmail] = useState({
-    email: currentUser.email,
+    email: currentUser?.email,
     pwd: "",
   });
   const defaultError = {
@@ -44,7 +44,7 @@ export const EditEmail = ({ ...props }) => {
     }
 
     const credential = EmailAuthProvider.credential(
-      currentUser.email,
+      currentUser?.email,
       newEmail.pwd
     );
 

@@ -14,9 +14,9 @@ import { Timestamp } from "firebase/firestore";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+
 const ProfileEditBio = ({ user, ...props }) => {
   const { currentUser } = useContext(AuthContext);
-  console.log(user);
   const [newBio, setNewBio] = useState({
     fName: user.bio?.fName,
     lName: user.bio?.lName,
