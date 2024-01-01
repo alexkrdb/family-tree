@@ -24,12 +24,13 @@ import UseFileUpload from "../../hooks/useFileUpload";
 import { updateOne } from "../../hooks/useDB";
 
 const ChatMenu = memo(() => {
+  const { data, dispatch } = useContext(ChatContext);
   const defaultState = {
     isEditing: false,
     file: null,
-    newName: "",
+    newName: data.data.name,
   }
-  const { data, dispatch } = useContext(ChatContext);
+  // console.log(data);
   const [changes, setChanges] = useState(defaultState);
   const [, ,uploadFiles] = UseFileUpload();
 

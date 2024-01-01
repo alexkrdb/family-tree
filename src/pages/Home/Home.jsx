@@ -1,6 +1,7 @@
 import { Button, Typography } from "@mui/material";
 import React from "react";
 import "./Home.scss";
+import { Link } from "react-router-dom";
 
 function Home() {
   return (
@@ -67,9 +68,9 @@ function Home() {
           przygody na naszej platformie!
         </Typography>
 
-        <div>
-          <Button variant="contained">Zarejestruj się</Button>
-        </div>
+        <Link to="/login">
+          <Button variant="contained" >Zarejestruj się</Button>
+        </Link>
       </div>
     </div>
   );
