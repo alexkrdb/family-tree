@@ -19,7 +19,6 @@ import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import ImageInput from "../imageInput/ImageInput";
 import Gallery from "../gallery/Gallery";
-import { TreeContext } from "../../context/TreeContext";
 import PersonRelations from "./personRelations";
 
 const PersonDetails = ({ person, changes, setChanges }) => {
